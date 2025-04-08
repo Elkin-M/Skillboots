@@ -1,0 +1,29 @@
+/* Modificación del CSS existente */
+#notificationDropdown {
+    min-width: 300px;
+    /* Cambio de max-width a min-width */
+    max-width: 400px;
+    /* Establecer un límite máximo */
+    width: auto;
+    /* Permitir que el ancho se ajuste al contenido */
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    left: auto !important;
+    /* Asegura que no se fuerza la posición izquierda */
+    right: 0 !important;
+    /* Alinea a la derecha */
+    transform: none !important;
+    /* Previene transformaciones que pueden afectar la posición */
+}
+
+.dropdown-item {
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 8px 15px;
+    /* Añade un poco más de padding para mejor lectura */
+}

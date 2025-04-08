@@ -1,0 +1,282 @@
+.nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+/* Logo styling */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Navigation menu */
+.derecho {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.derecho a {
+    padding: 15px;
+    color: #44425A;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.derecho a i {
+    margin-right: 8px;
+}
+
+.derecho a.active {
+    color: #ff6600;
+}
+
+.derecho a:hover {
+    color: #ff6600;
+}
+
+.derecho a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #ff6600;
+    left: 15px;
+    bottom: 12px;
+    transition: width 0.3s ease;
+}
+
+.derecho a:hover::after,
+.derecho a.active::after {
+    width: calc(100% - 30px);
+}
+
+/* Search and user section */
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Search box */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input {
+    border: 2px solid #bebebe;
+    border-radius: 8px 0 0 8px;
+    padding: 8px 12px;
+    width: 200px;
+    font-family: 'Poppins', sans-serif;
+    border-right: none;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #ff6600;
+}
+
+.search-container button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 9px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-container button:hover {
+    background-color: #e65c00;
+}
+
+/* User profile dropdown */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 220px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    padding: 8px 0;
+    margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #44425A;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 102, 0, 0.1);
+    color: #ff6600;
+}
+
+.dropdown-item i {
+    margin-right: 12px;
+    width: 16px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 8px 0;
+}
+
+/* Triangle indicator on dropdown */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+/* Notification badges */
+.badge-new {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ff6600;
+    color: white;
+    border-radius: 50%;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* Role badge styling */
+.profesor-badge {
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Notification dropdown specific styles */
+#notificationBadge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ff6600;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+}
+
+#notificationDropdown {
+    width: 300px;
+}
+
+#notificationDropdown .dropdown-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 15px;
+}
+
+#notificationDropdown .dropdown-item i {
+    margin-top: 3px;
+    margin-right: 12px;
+}
+
+#notificationDropdown .dropdown-item div {
+    flex: 1;
+}
+
+/* Mobile menu improvements */
+@media (max-width: 992px) {
+    .navbar-collapse .user-info {
+        justify-content: flex-start;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+    }
+
+    .navbar-nav .nav-item {
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 12px 15px;
+    }
+
+    .search-container {
+        width: 100%;
+        padding: 15px;
+        margin: 0;
+    }
+
+    .search-container form {
+        width: 100%;
+    }
+
+    .search-container input {
+        width: calc(100% - 50px);
+    }
+}
