@@ -519,7 +519,7 @@ $userName = obtenerNombreUsuario($userId);
                                 <img src="<?php echo htmlspecialchars($curso['imagen']); ?>" alt="<?php echo htmlspecialchars($curso['titulo']); ?>" class="img-fluid rounded" style="width: 80px; height: 50px; object-fit: cover;">
                                 <div class="ml-3">
                                     <h6 class="mb-0"><?php echo htmlspecialchars($curso['titulo']); ?></h6>
-                                    <a href="curso.php?id=<?php echo $curso['id']; ?>" class="btn btn-sm btn-outline-primary mt-2">Ver detalles</a>
+                                    <a href="ver-cursos.php?id=<?php echo $curso['id']; ?>" class="btn btn-sm btn-outline-primary mt-2">Ver detalles</a>
                                 </div>
                             </div>
                             <?php endforeach; ?>

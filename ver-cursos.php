@@ -24,16 +24,11 @@ if (!$curso_id) {
 $user_id = $_SESSION['user_id'];
 $userRole = Auth::getUserRole();
 
-// Check course access permissions
-$courseAccess = new CourseAccess($conn);
-$hasAccess = $courseAccess->checkAccess($user_id, $curso_id, $userRole);
+// Permitir acceso a todos los usuarios
+$hasAccess = true;
 
 if (!$hasAccess) {
-    if ($userRole === 'estudiante') {
-        header('Location: detalle_curso.php?id=' . $curso_id . '&error=no_inscrito');
-    } else {
-        header('Location: dashboard.php?error=no_permiso');
-    }
+    header('Location: lista_cursos.php?error=curso_no_encontrado');
     exit;
 }
 
@@ -165,7 +160,7 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'estudiante') {
             <div class="course-sidebar rounded shadow-sm">
                 <div class="sidebar-header p-3 border-bottom">
                     <h5 class="fw-bold mb-0">
-                        <i class="fas fa-book me-2 text-primary"></i>Contenido del curso
+                        <i class="fas fa-book me-2 text-primary"></i> Contenido del curso
                     </h5>
                 </div>
 
@@ -210,7 +205,8 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'estudiante') {
                             <div class="accordion-body p-0">
                                 <ul class="list-group list-group-flush content-list">
                                 <?php foreach ($data['contenidosPorModulo'][$modulo['id']] as $cont):
-$esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $progreso['completados']) : false;                                    $esActivo = ($cont['id'] == $contenido_id);
+                                    $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $progreso['completados']) : false;
+                                    $esActivo = ($cont['id'] == $contenido_id);
 
                                     // Determine icon based on content type
                                     $icon = '';
@@ -232,7 +228,8 @@ $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $prog
                                                 <span class="content-icon"><i class="<?php echo $icon; ?>"></i></span>
                                             <?php endif; ?>
                                             <span class="ms-2"><?php echo htmlspecialchars($cont['titulo']); ?></span>
-                                            <?php if (isset($cont['duracion']) && $cont['duracion']): ?>                                                <span class="ms-auto small text-muted"><?php echo $cont['duracion']; ?></span>
+                                            <?php if (isset($cont['duracion']) && $cont['duracion']): ?>
+                                                <span class="ms-auto small text-muted"><?php echo $cont['duracion']; ?></span>
                                             <?php endif; ?>
                                         </a>
                                     </li>
@@ -243,7 +240,7 @@ $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $prog
                     </div>
                     <?php endforeach; ?>
                 </div>
-                
+
                 <?php if ($userRole === 'estudiante'): ?>
                 <div class="sidebar-footer p-3 border-top">
                     <a href="recursos_curso.php?id=<?php echo $curso_id; ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -258,7 +255,7 @@ $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $prog
         <div class="col-lg-9">
             <?php if ($contenidoActual): ?>
                 <div class="content-container bg-white rounded shadow-sm overflow-hidden">
-                    <div  class="content-header p-4 border-bottom">
+                    <div class="content-header p-4 border-bottom">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 style="font-size: 2.4rem; text-transform: uppercase;" class="h3 fw-bold mb-0"><?php echo htmlspecialchars($contenidoActual['titulo']); ?></h2>
                             <?php if ($userRole === 'estudiante'): ?>
@@ -286,83 +283,83 @@ $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $prog
                                     // Mostrar en párrafo
                                     echo "<p>{$lineaPurificada}</p>";
                                 }
-        }
-        ?>
+                            }
+                            ?>
                             </p>
 
-                            <?php elseif ($contenidoActual['tipo'] === 'video'): ?>
-    <div class="content-video ratio ratio-16x9 mb-4">
-        <?php
-        $videoUrl = trim($contenidoActual['contenido']);
-        
-        // Detectar el tipo de URL de video (YouTube, Vimeo, etc.)
-        if (strpos($videoUrl, 'youtube.com') !== false || strpos($videoUrl, 'youtu.be') !== false) {
-            // Procesar URLs de YouTube
-            $videoId = '';
-            
-            // Formato youtu.be/XXXXXXXXXXX
-            if (strpos($videoUrl, 'youtu.be') !== false) {
-                $parts = explode('/', $videoUrl);
-                $videoId = end($parts);
-            } 
-            // Formato youtube.com/watch?v=XXXXXXXXXXX
-            elseif (strpos($videoUrl, 'watch?v=') !== false) {
-                parse_str(parse_url($videoUrl, PHP_URL_QUERY), $params);
-                $videoId = isset($params['v']) ? $params['v'] : '';
-            }
-            // Formato youtube.com/embed/XXXXXXXXXXX
-            elseif (strpos($videoUrl, '/embed/') !== false) {
-                $parts = explode('/embed/', $videoUrl);
-                if (isset($parts[1])) {
-                    $videoId = explode('?', $parts[1])[0];
-                }
-            }
-            
-            if ($videoId) {
-                echo '<iframe src="https://www.youtube.com/embed/' . htmlspecialchars($videoId) . '" 
-                    title="YouTube video player" frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen></iframe>';
-            } else {
-                echo '<div class="alert alert-warning">URL de YouTube inválida</div>';
-            }
-        } 
-        // Vimeo
-        elseif (strpos($videoUrl, 'vimeo.com') !== false) {
-            $vimeoId = '';
-            
-            // Formato vimeo.com/XXXXXXXXX
-            $parts = explode('/', $videoUrl);
-            $vimeoId = end($parts);
-            
-            if ($vimeoId && is_numeric($vimeoId)) {
-                echo '<iframe src="https://player.vimeo.com/video/' . htmlspecialchars($vimeoId) . '" 
-                    frameborder="0" allow="autoplay; fullscreen; picture-in-picture" 
-                    allowfullscreen></iframe>';
-            } else {
-                echo '<div class="alert alert-warning">URL de Vimeo inválida</div>';
-            }
-        }
-        // Si es una URL directa a un video o ya contiene un iframe completo
-        elseif (strpos($videoUrl, '<iframe') !== false) {
-            // Si ya es un iframe, mostrarlo directamente
-            echo Security::purifyHTML($videoUrl);
-        }
-        // URLs normales (mp4, webm, etc.)
-        elseif (preg_match('/\.(mp4|webm|ogg)$/i', $videoUrl)) {
-            echo '<video controls class="w-100 h-100">
-                    <source src="' . htmlspecialchars($videoUrl) . '" type="video/' . pathinfo($videoUrl, PATHINFO_EXTENSION) . '">
-                    Tu navegador no soporta el elemento de video.
-                  </video>';
-        }
-        // Si es otro tipo de URL o formato no reconocido
-        else {
-            // Intentar mostrar como iframe genérico
-            echo '<iframe src="' . htmlspecialchars($videoUrl) . '" 
-                frameborder="0" allowfullscreen class="w-100 h-100"></iframe>';
-        }
-        ?>
-    </div>
+                        <?php elseif ($contenidoActual['tipo'] === 'video'): ?>
+                            <div class="content-video ratio ratio-16x9 mb-4">
+                                <?php
+                                $videoUrl = trim($contenidoActual['contenido']);
+
+                                // Detectar el tipo de URL de video (YouTube, Vimeo, etc.)
+                                if (strpos($videoUrl, 'youtube.com') !== false || strpos($videoUrl, 'youtu.be') !== false) {
+                                    // Procesar URLs de YouTube
+                                    $videoId = '';
+
+                                    // Formato youtu.be/XXXXXXXXXXX
+                                    if (strpos($videoUrl, 'youtu.be') !== false) {
+                                        $parts = explode('/', $videoUrl);
+                                        $videoId = end($parts);
+                                    }
+                                    // Formato youtube.com/watch?v=XXXXXXXXXXX
+                                    elseif (strpos($videoUrl, 'watch?v=') !== false) {
+                                        parse_str(parse_url($videoUrl, PHP_URL_QUERY), $params);
+                                        $videoId = isset($params['v']) ? $params['v'] : '';
+                                    }
+                                    // Formato youtube.com/embed/XXXXXXXXXXX
+                                    elseif (strpos($videoUrl, '/embed/') !== false) {
+                                        $parts = explode('/embed/', $videoUrl);
+                                        if (isset($parts[1])) {
+                                            $videoId = explode('?', $parts[1])[0];
+                                        }
+                                    }
+
+                                    if ($videoId) {
+                                        echo '<iframe src="https://www.youtube.com/embed/' . htmlspecialchars($videoId) . '"
+                                            title="YouTube video player" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen></iframe>';
+                                    } else {
+                                        echo '<div class="alert alert-warning">URL de YouTube inválida</div>';
+                                    }
+                                }
+                                // Vimeo
+                                elseif (strpos($videoUrl, 'vimeo.com') !== false) {
+                                    $vimeoId = '';
+
+                                    // Formato vimeo.com/XXXXXXXXX
+                                    $parts = explode('/', $videoUrl);
+                                    $vimeoId = end($parts);
+
+                                    if ($vimeoId && is_numeric($vimeoId)) {
+                                        echo '<iframe src="https://player.vimeo.com/video/' . htmlspecialchars($vimeoId) . '"
+                                            frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
+                                            allowfullscreen></iframe>';
+                                    } else {
+                                        echo '<div class="alert alert-warning">URL de Vimeo inválida</div>';
+                                    }
+                                }
+                                // Si es una URL directa a un video o ya contiene un iframe completo
+                                elseif (strpos($videoUrl, '<iframe') !== false) {
+                                    // Si ya es un iframe, mostrarlo directamente
+                                    echo Security::purifyHTML($videoUrl);
+                                }
+                                // URLs normales (mp4, webm, etc.)
+                                elseif (preg_match('/\.(mp4|webm|ogg)$/i', $videoUrl)) {
+                                    echo '<video controls class="w-100 h-100">
+                                        <source src="' . htmlspecialchars($videoUrl) . '" type="video/' . pathinfo($videoUrl, PATHINFO_EXTENSION) . '">
+                                        Tu navegador no soporta el elemento de video.
+                                      </video>';
+                                }
+                                // Si es otro tipo de URL o formato no reconocido
+                                else {
+                                    // Intentar mostrar como iframe genérico
+                                    echo '<iframe src="' . htmlspecialchars($videoUrl) . '"
+                                        frameborder="0" allowfullscreen class="w-100 h-100"></iframe>';
+                                }
+                                ?>
+                            </div>
 
                             <?php if (!empty($contenidoActual['transcripcion'])): ?>
                             <div class="video-transcription mt-4">
@@ -621,88 +618,85 @@ $esCompletado = is_array($progreso['completados']) ? in_array($cont['id'], $prog
                                                         <div class="form-floating mb-3">
                                                             <textarea class="form-control" id="replyTextarea_<?php echo $comentario['id']; ?>" name="respuesta"
                                                                   style="height: 80px" placeholder="Escribe tu respuesta..."></textarea>
+                                                            <label for="replyTextarea_<?php echo $comentario['id']; ?>">Escribe tu respuesta...</label>
+                                                        </div>
 
-<label for="replyTextarea_<?php echo $comentario['id']; ?>">Escribe tu respuesta...</label>
-        </div>
-
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-sm btn-outline-secondary me-2"
-                    onclick="toggleReplyForm('<?php echo $comentario['id']; ?>')">
-                Cancelar
-            </button>
-            <button type="submit" class="btn btn-sm btn-primary">
-                <i class="fas fa-paper-plane me-1"></i> Responder
-            </button>
-        </div>
-    </form>
-</div>
-
-<?php if (!empty($comentario['respuestas'])): ?>
-    <div class="replies-container mt-3 ps-4 border-start">
-        <?php foreach ($comentario['respuestas'] as $respuesta): ?>
-            <div class="reply-item mb-3">
-                <div class="d-flex">
-                    <img src="<?php echo !empty($respuesta['foto_perfil']) ? htmlspecialchars($respuesta['foto_perfil']) : 'img/profile-default.jpg'; ?>"
-                         class="rounded-circle me-2" alt="Avatar" width="36" height="36" style="object-fit: cover;">
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <h6 class="mb-0 small">
-                                <?php echo htmlspecialchars($respuesta['usuario_nombre']); ?>
-                                <?php if ($respuesta['usuario_id'] == $curso['instructor_id']): ?>
-                                    <span class="badge bg-primary ms-2">Instructor</span>
-                                <?php endif; ?>
-                            </h6>
-                            <small class="text-muted">
-                                <?php echo TimeUtils::timeAgo($respuesta['fecha_creacion']); ?>
-                            </small>
-                        </div>
-                        <div class="reply-text small">
-                            <?php echo nl2br(htmlspecialchars($respuesta['respuesta'])); ?>
-                        </div>
-                        <?php if ($respuesta['usuario_id'] == $user_id): ?>
-                            <div class="reply-actions mt-1">
-                                <button class="btn btn-sm btn-link text-decoration-none p-0 text-danger small"
-                                        onclick="deleteReply('<?php echo $respuesta['id']; ?>')">
-                                    <i class="fas fa-trash-alt me-1"></i> Eliminar
-                                </button>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
-                                                    </div>
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                                                onclick="toggleReplyForm('<?php echo $comentario['id']; ?>')">
+                                                                Cancelar
+                                                            </button>
+                                                            <button type="submit" class="btn btn-sm btn-primary">
+                                                                <i class="fas fa-paper-plane me-1"></i> Responder
+                                                            </button>
+                                                        </div>
+                                                    </form>
                                                 </div>
+
+                                                <?php if (!empty($comentario['respuestas'])): ?>
+                                                    <div class="replies-container mt-3 ps-4 border-start">
+                                                        <?php foreach ($comentario['respuestas'] as $respuesta): ?>
+                                                            <div class="reply-item mb-3">
+                                                                <div class="d-flex">
+                                                                    <img src="<?php echo !empty($respuesta['foto_perfil']) ? htmlspecialchars($respuesta['foto_perfil']) : 'img/profile-default.jpg'; ?>"
+                                                                         class="rounded-circle me-2" alt="Avatar" width="36" height="36" style="object-fit: cover;">
+                                                                    <div class="flex-grow-1">
+                                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                            <h6 class="mb-0 small">
+                                                                                <?php echo htmlspecialchars($respuesta['usuario_nombre']); ?>
+                                                                                <?php if ($respuesta['usuario_id'] == $curso['instructor_id']): ?>
+                                                                                    <span class="badge bg-primary ms-2">Instructor</span>
+                                                                                <?php endif; ?>
+                                                                            </h6>
+                                                                            <small class="text-muted">
+                                                                                <?php echo TimeUtils::timeAgo($respuesta['fecha_creacion']); ?>
+                                                                            </small>
+                                                                        </div>
+                                                                        <div class="reply-text small">
+                                                                            <?php echo nl2br(htmlspecialchars($respuesta['respuesta'])); ?>
+                                                                        </div>
+                                                                        <?php if ($respuesta['usuario_id'] == $user_id): ?>
+                                                                            <div class="reply-actions mt-1">
+                                                                                <button class="btn btn-sm btn-link text-decoration-none p-0 text-danger small"
+                                                                                        onclick="deleteReply('<?php echo $respuesta['id']; ?>')">
+                                                                                    <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                                                                </button>
+                                                                            </div>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <div class="no-comments text-center py-4">
-                                            <i class="fas fa-comments text-muted mb-3" style="font-size: 2rem;"></i>
-                                            <p class="text-muted">No hay comentarios todavía. ¡Sé el primero en comentar!</p>
                                         </div>
-                                    <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="no-comments text-center py-4">
+                                    <i class="fas fa-comments text-muted mb-3" style="font-size: 2rem;"></i>
+                                    <p class="text-muted">No hay comentarios todavía. ¡Sé el primero en comentar!</p>
                                 </div>
-                            </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <div class="course-welcome bg-white rounded shadow-sm p-5 text-center">
-                            <div class="mb-4">
-                                <i class="fas fa-book-open text-primary" style="font-size: 4rem;"></i>
-                            </div>
-                            <h2 class="mb-3">Bienvenido a <?php echo htmlspecialchars($curso['nombre']); ?></h2>
-                            <p class="lead mb-4">Selecciona un módulo y contenido del panel izquierdo para comenzar a aprender.</p>
-                            <?php if ($moduloActual): ?>
-                                <a href="ver_curso.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $moduloActual['id']; ?>&contenido=<?php echo $contenidos[0]['id']; ?>"
-                                   class="btn btn-lg btn-primary">
-                                    <i class="fas fa-play-circle me-2"></i> Comenzar el curso
-                                </a>
                             <?php endif; ?>
                         </div>
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <div class="course-welcome bg-white rounded shadow-sm p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-book-open text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="mb-3">Bienvenido a <?php echo htmlspecialchars($curso['nombre']); ?></h2>
+                    <p class="lead mb-4">Selecciona un módulo y contenido del panel izquierdo para comenzar a aprender.</p>
+                    <?php if ($moduloActual): ?>
+                        <a href="ver_curso.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $moduloActual['id']; ?>&contenido=<?php echo $contenidos[0]['id']; ?>"
+                           class="btn btn-lg btn-primary">
+                            <i class="fas fa-play-circle me-2"></i> Comenzar el curso
+                        </a>
                     <?php endif; ?>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
