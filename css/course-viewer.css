@@ -1,0 +1,81 @@
+/* Estilos para el visor de cursos */
+.course-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.course-sidebar {
+    background-color: #fff;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.content-list .content-item {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.content-list .content-item:hover {
+    background-color: #f8f9fa;
+}
+
+.content-list .content-item.active {
+    background-color: #e9f2ff;
+    border-left-color: #007bff;
+}
+
+.content-list .content-item.completed {
+    border-left-color: #28a745;
+}
+
+.content-link {
+    color: #495057;
+    padding: 0.5rem 0;
+    display: block;
+}
+
+.content-icon, .check-icon {
+    width: 20px;
+    text-align: center;
+}
+
+.module-number {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    font-size: 0.8rem;
+}
+
+.module-progress {
+    font-size: 0.75rem;
+}
+
+.content-video {
+    background-color: #000;
+}
+
+.content-text {
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.quiz-question {
+    border-left: 3px solid #17a2b8;
+}
+
+.option-item:hover {
+    background-color: #f8f9fa;
+}
+
+.comment-item:last-child {
+    border-bottom: none !important;
+}
+
+.auto-save-feedback {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}

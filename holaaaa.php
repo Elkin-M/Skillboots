@@ -317,7 +317,7 @@ $sql = "SELECT
         LEFT JOIN
             usuarios_cursos uc ON c.id = uc.curso_id
         WHERE
-            c.instructor_id = :instructor_id
+            c.instructor_id = :instructor_id and c.estate != 'eliminado'
         GROUP BY
             c.id
         ORDER BY
@@ -678,33 +678,68 @@ function confirmarEliminar(id, nombre) {
 
 // Función para eliminar curso
 function eliminarCurso(id) {
+    if (!id || isNaN(id)) {
+        alert('ID de curso no válido');
+        return;
+    }
+    
     console.log('Eliminar curso ID:', id);
+    
+    // Crear el objeto FormData para enviar datos
+    const formData = new FormData();
+    
+    // Agregar token CSRF si existe en la página
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (csrfToken) {
+        formData.append('csrf_token', csrfToken);
+    }
+    
+    // Realizar la solicitud
     fetch('./Acciones/delete_course.php?id=' + id, {
-        method: 'POST'
+        method: 'GET', // Cambiado a GET para coincidir con el backend
+        credentials: 'same-origin' // Incluir cookies en la solicitud
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.status);
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('Respuesta:', data);
-        // Cerrar el modal
-        $('#confirmarEliminarModal').modal('hide');
+        
+        // Cerrar el modal si existe
+        const modal = $('#confirmarEliminarModal');
+        if (modal.length) {
+            modal.modal('hide');
+        }
 
         if (data.success) {
             // Eliminar el elemento del DOM
             const cursoElement = document.querySelector(`.curso-item[data-id="${id}"]`);
             if (cursoElement) {
                 cursoElement.remove();
+            } else {
+                // Si no se encuentra el elemento, recargar la página
+                window.location.reload();
             }
 
             // Mostrar mensaje de éxito
-            alert('Curso eliminado con éxito');
+            alert('Curso marcado para eliminación. Se eliminará permanentemente en 30 días.');
         } else {
             // Mostrar mensaje de error
-            alert('Error al eliminar el curso: ' + data.message);
+            alert('Error al eliminar el curso: ' + (data.message || 'Error desconocido'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al conectar con el servidor');
+        alert('Error al conectar con el servidor: ' + error.message);
+        
+        // Cerrar el modal en caso de error
+        const modal = $('#confirmarEliminarModal');
+        if (modal.length) {
+            modal.modal('hide');
+        }
     });
 }
 

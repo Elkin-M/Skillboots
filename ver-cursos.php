@@ -33,6 +33,7 @@ if (!$hasAccess) {
 }
 
 // Load course data - using a dedicated class for better organization
+// Reemplaza estas líneas en el archivo original
 $courseManager = new CourseAccess($conn);
 $curso = $courseManager->getCourseDetails($curso_id);
 
@@ -511,7 +512,7 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'estudiante') {
                         <div class="content-footer p-4 border-top">
                             <div class="d-flex justify-content-between">
                                 <?php if ($navegacion['anterior']): ?>
-                                    <a href="ver_curso.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $navegacion['anterior']['modulo_id']; ?>&contenido=<?php echo $navegacion['anterior']['id']; ?>"
+                                    <a href="ver-cursos.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $navegacion['anterior']['modulo_id']; ?>&contenido=<?php echo $navegacion['anterior']['id']; ?>"
                                        class="btn btn-outline-primary">
                                         <i class="fas fa-chevron-left me-2"></i> Anterior
                                     </a>
@@ -520,7 +521,7 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'estudiante') {
                                 <?php endif; ?>
 
                                 <?php if ($navegacion['siguiente']): ?>
-                                    <a href="ver_curso.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $navegacion['siguiente']['modulo_id']; ?>&contenido=<?php echo $navegacion['siguiente']['id']; ?>"
+                                    <a href="ver-cursos.php?id=<?php echo $curso_id; ?>&modulo=<?php echo $navegacion['siguiente']['modulo_id']; ?>&contenido=<?php echo $navegacion['siguiente']['id']; ?>"
                                        class="btn btn-primary">
                                         Siguiente <i class="fas fa-chevron-right ms-2"></i>
                                     </a>

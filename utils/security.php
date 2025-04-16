@@ -56,14 +56,13 @@ class CourseAccess {
      * @param int $course_id Course ID
      * @return array|false Course details or false if not found
      */
-    public function getCourseDetails($course_id) {
-        $stmt = $this->conn->prepare("
-            SELECT c.*, i.name AS instructor_nombre, i.foto_perfil AS instructor_foto
-            FROM cursos c
-            JOIN usuarios i ON c.instructor_id = i.id
-            WHERE c.id = ?
-        ");
-        $stmt->execute([$course_id]);
+    public function getCourseDetails($curso_id) {
+        $sql = "SELECT c.*, u.name as instructor_nombre, u.foto_perfil as instructor_foto, u.id as instructor_id
+               FROM cursos c
+               LEFT JOIN usuarios u ON c.instructor_id = u.id
+               WHERE c.id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$curso_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
@@ -76,148 +75,7 @@ class ProgressTracker {
     }
 
 
-
-    /**
-     * Registra el progreso del usuario en un curso
-     * 
-     * @param int $user_id ID del usuario
-     * @param int $curso_id ID del curso
-     * @param int $modulo_id ID del módulo
-     * @param int $contenido_id ID del contenido
-     * @return bool Retorna true si se registró correctamente, false en caso contrario
-     */
-    public function recordProgress($user_id, $curso_id, $modulo_id, $contenido_id) {
-        try {
-            // Verificar si el usuario está inscrito en el curso
-            $stmt = $this->conn->prepare("
-                SELECT id, progreso, lecciones_completadas 
-                FROM usuarios_cursos 
-                WHERE usuario_id = ? AND curso_id = ?
-            ");
-            $stmt->execute([$user_id, $curso_id]);
-            $inscripcion = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$inscripcion) {
-                // Si no está inscrito, inscribirlo automáticamente
-                $stmt = $this->conn->prepare("
-                    INSERT INTO usuarios_cursos (usuario_id, curso_id, progreso, lecciones_completadas, ultimo_acceso) 
-                    VALUES (?, ?, 0, 0, NOW())
-                ");
-                $stmt->execute([$user_id, $curso_id]);
-                $inscripcion = [
-                    'id' => $this->conn->lastInsertId(),
-                    'progreso' => 0,
-                    'lecciones_completadas' => 0
-                ];
-            }
-            
-            // Actualizar el último acceso
-            $stmt = $this->conn->prepare("
-                UPDATE usuarios_cursos 
-                SET ultimo_acceso = NOW() 
-                WHERE id = ?
-            ");
-            $stmt->execute([$inscripcion['id']]);
-            
-            // Verificar si este contenido ya fue marcado como completado
-            $stmt = $this->conn->prepare("
-                SELECT id FROM contenidos_completados 
-                WHERE usuario_id = ? AND curso_id = ? AND contenido_id = ?
-            ");
-            $stmt->execute([$user_id, $curso_id, $contenido_id]);
-            $yaCompletado = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$yaCompletado) {
-                // Marcar el contenido como completado
-                $stmt = $this->conn->prepare("
-                    INSERT INTO contenidos_completados (usuario_id, curso_id, modulo_id, contenido_id, fecha_completado) 
-                    VALUES (?, ?, ?, ?, NOW())
-                ");
-                $stmt->execute([$user_id, $curso_id, $modulo_id, $contenido_id]);
-                
-                // Incrementar lecciones completadas
-                $lecciones_completadas = $inscripcion['lecciones_completadas'] + 1;
-                
-                // Calcular el nuevo progreso
-                $stmt = $this->conn->prepare("
-                    SELECT COUNT(*) as total FROM contenido_modular cm
-                    JOIN modulos m ON cm.modulo_id = m.id
-                    WHERE m.curso_id = ?
-                ");
-                $stmt->execute([$curso_id]);
-                $totalContenidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-                
-                if ($totalContenidos > 0) {
-                    $progreso = ($lecciones_completadas / $totalContenidos) * 100;
-                    $progreso = min(100, $progreso); // Asegurar que no exceda 100%
-                } else {
-                    $progreso = 0;
-                }
-                
-                // Actualizar progreso y lecciones completadas
-                $stmt = $this->conn->prepare("
-                    UPDATE usuarios_cursos 
-                    SET progreso = ?, lecciones_completadas = ? 
-                    WHERE id = ?
-                ");
-                $stmt->execute([round($progreso), $lecciones_completadas, $inscripcion['id']]);
-                
-                // Si el progreso llegó a 100%, registrar notificación
-                if ($progreso == 100) {
-                    $stmt = $this->conn->prepare("
-                        INSERT INTO notifications (user_id, role, message, link, icon, `read`, created_at)
-                        VALUES (?, 'student', 'Has completado el curso exitosamente', '/cursos/certificado/{$curso_id}', 'graduation-cap', 0, NOW())
-                    ");
-                    $stmt->execute([$user_id]);
-                }
-            }
-            
-            return true;
-        } catch (PDOException $e) {
-            // Registrar el error
-            error_log("Error registrando progreso: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Get the student's progress for a specific course.
-     *
-     * @param int $user_id User ID
-     * @param int $curso_id Course ID
-     * @return array Student progress data
-     */
-    public function getStudentProgress($user_id, $curso_id) {
-        try {
-            // Consulta SQL optimizada para la estructura actual
-            $stmt = $this->conn->prepare("
-                SELECT 
-                    c.total_lecciones AS total, 
-                    COALESCE(uc.lecciones_completadas, 0) AS completados, 
-                    COALESCE(uc.ultimo_acceso, 'Nunca') AS ultimo_acceso
-                FROM cursos c
-                LEFT JOIN usuarios_cursos uc ON uc.curso_id = c.id AND uc.usuario_id = ?
-                WHERE c.id = ?
-            ");
-    
-            // Ejecutar consulta
-            $stmt->execute([$user_id, $curso_id]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            // Si no hay resultados, devolver valores predeterminados
-            if (!$result) {
-                return ['total' => 0, 'completados' => 0, 'ultimo_acceso' => 'Nunca'];
-            }
-    
-            return $result;
-        } catch (Exception $e) {
-            // Manejo de errores
-            error_log("Error en getStudentProgress: " . $e->getMessage());
-            return ['total' => 0, 'completados' => 0, 'ultimo_acceso' => 'Nunca'];
-        }
-    }
-
-    /**
+        /**
      * Calculate the overall progress percentage for a course.
      *
      * @param int $curso_id Course ID
@@ -237,7 +95,179 @@ class ProgressTracker {
         
         return $total > 0 ? ($completados / $total) * 100 : 0;
     }
+
+    /**
+     * Registra el progreso del usuario en un curso
+     * 
+     * @param int $user_id ID del usuario
+     * @param int $curso_id ID del curso
+     * @param int $modulo_id ID del módulo
+     * @param int $contenido_id ID del contenido
+     * @return bool Retorna true si se registró correctamente, false en caso contrario
+     */
+    
+
+     public function recordProgress($user_id, $curso_id, $modulo_id, $contenido_id) {
+        // Verificar si ya existe un registro para este usuario y contenido
+        $sql = "SELECT id FROM progreso_contenido
+               WHERE usuario_id = ? AND curso_id = ? AND contenido_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$user_id, $curso_id, $contenido_id]);
+        $exists = $stmt->fetch(PDO::FETCH_COLUMN);
+        
+        // Si no existe, crear un registro
+        if (!$exists) {
+            $sql = "INSERT INTO progreso_contenido 
+                   (usuario_id, curso_id, modulo_id, contenido_id, fecha_acceso)
+                   VALUES (?, ?, ?, ?, NOW())";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$user_id, $curso_id, $modulo_id, $contenido_id]);
+        } else {
+            // Actualizar la fecha de acceso
+            $sql = "UPDATE progreso_contenido 
+                   SET fecha_acceso = NOW() 
+                   WHERE usuario_id = ? AND curso_id = ? AND contenido_id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$user_id, $curso_id, $contenido_id]);
+        }
+        
+        // Actualizar último acceso en usuarios_cursos
+        $sql = "INSERT INTO usuarios_cursos (usuario_id, curso_id, ultimo_acceso)
+               VALUES (?, ?, NOW())
+               ON DUPLICATE KEY UPDATE ultimo_acceso = NOW()";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$user_id, $curso_id]);
+    }
+    /**
+     * Get the student's progress for a specific course.
+     *
+     * @param int $user_id User ID
+     * @param int $curso_id Course ID
+     * @return array Student progress data
+     */
+    public function getStudentProgress($user_id, $curso_id) {
+        // Obtener todos los contenidos del curso
+        $sql = "SELECT cm.id, cm.modulo_id
+               FROM contenido_modular cm
+               JOIN modulos m ON cm.modulo_id = m.id
+               WHERE m.curso_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$curso_id]);
+        $contenidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Obtener contenidos completados
+        $sql = "SELECT contenido_id, modulo_id
+               FROM progreso_contenido
+               WHERE usuario_id = ? AND curso_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$user_id, $curso_id]);
+        $completados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convertir a un formato más fácil de usar
+        $idsCompletados = array_column($completados, 'contenido_id');
+        $modulosProgreso = [];
+        
+        // Calcular progreso por módulo
+        foreach ($contenidos as $contenido) {
+            $modulo_id = $contenido['modulo_id'];
+            
+            if (!isset($modulosProgreso[$modulo_id])) {
+                $modulosProgreso[$modulo_id] = [
+                    'total' => 0,
+                    'completados' => 0,
+                    'porcentaje' => 0
+                ];
+            }
+            
+            $modulosProgreso[$modulo_id]['total']++;
+            
+            if (in_array($contenido['id'], $idsCompletados)) {
+                $modulosProgreso[$modulo_id]['completados']++;
+            }
+        }
+        
+        // Calcular porcentajes
+        foreach ($modulosProgreso as $modulo_id => &$progreso) {
+            if ($progreso['total'] > 0) {
+                $progreso['porcentaje'] = ($progreso['completados'] / $progreso['total']) * 100;
+            }
+        }
+        
+        // Obtener último acceso
+        $sql = "SELECT ultimo_acceso FROM usuarios_cursos
+               WHERE usuario_id = ? AND curso_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$user_id, $curso_id]);
+        $ultimo_acceso = $stmt->fetch(PDO::FETCH_COLUMN) ?: date('Y-m-d H:i:s');
+        
+        return [
+            'completados' => count($idsCompletados),
+            'total' => count($contenidos),
+            'modulos' => $modulosProgreso,
+            'completados_ids' => $idsCompletados, // ✅ renombrado
+            'ultimo_acceso' => $ultimo_acceso
+        ];
+    }
 }
+
+
+
+
+    class CommentsManager {
+        private $conn;
+        
+        public function __construct($conn) {
+            $this->conn = $conn;
+        }
+        
+        public function getContentComments($curso_id, $contenido_id) {
+            $sql = "SELECT c.*, u.name as usuario_nombre, u.foto_perfil 
+                   FROM comentarios c
+                   JOIN usuarios u ON c.usuario_id = u.id
+                   WHERE c.curso_id = ? AND c.contenido_id = ? AND c.comentario_padre_id IS NULL
+                   ORDER BY c.fecha_creacion DESC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$curso_id, $contenido_id]);
+            $comentarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Obtener respuestas para cada comentario
+            foreach ($comentarios as &$comentario) {
+                $sql = "SELECT r.*, u.name as usuario_nombre, u.foto_perfil 
+                       FROM comentarios r
+                       JOIN usuarios u ON r.usuario_id = u.id
+                       WHERE r.comentario_padre_id = ?
+                       ORDER BY r.fecha_creacion ASC";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([$comentario['id']]);
+                $comentario['respuestas'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            
+            return $comentarios;
+        }
+    }
+  
+    
+    class TimeUtils {
+        public static function timeAgo($datetime) {
+            $timestamp = strtotime($datetime);
+            $difference = time() - $timestamp;
+            
+            if ($difference < 60) {
+                return 'hace un momento';
+            } elseif ($difference < 3600) {
+                $minutes = floor($difference / 60);
+                return $minutes . ' minuto' . ($minutes != 1 ? 's' : '') . ' atrás';
+            } elseif ($difference < 86400) {
+                $hours = floor($difference / 3600);
+                return $hours . ' hora' . ($hours != 1 ? 's' : '') . ' atrás';
+            } elseif ($difference < 604800) {
+                $days = floor($difference / 86400);
+                return $days . ' día' . ($days != 1 ? 's' : '') . ' atrás';
+            } else {
+                return date('d M Y', $timestamp);
+            }
+        }
+    }
 
 class CourseContent {
     private $conn;
@@ -254,203 +284,136 @@ class CourseContent {
      * @param int $content_id Content ID
      * @return array Course content data
      */
-    public function loadCourseContent($course_id, $module_id = null, $content_id = null) {
-        $data = [
-            'modulos' => [],
-            'moduloActual' => null,
-            'contenidos' => [],
-            'contenidoActual' => null,
-            'navegacion' => [
-                'anterior' => null,
-                'siguiente' => null
-            ],
-            'contenidosPorModulo' => []
-        ];
     
-        // Verificar que el curso existe y está activo
-        $stmt = $this->conn->prepare("
-            SELECT id, nombre, descripcion FROM cursos
-            WHERE id = ? AND estate = 'activo'
-        ");
-        $stmt->execute([$course_id]);
-        $curso = $stmt->fetch(PDO::FETCH_ASSOC);
+     public function loadCourseContent($curso_id, $modulo_id = 0, $contenido_id = 0) {
+        // Obtener todos los módulos del curso
+        $sql = "SELECT * FROM modulos WHERE curso_id = ? ORDER BY orden ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$curso_id]);
+        $modulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        if (!$curso) {
-            return ['error' => 'Curso no encontrado o inactivo'];
+        // Si no hay módulo seleccionado, usar el primero
+        if ($modulo_id == 0 && !empty($modulos)) {
+            $modulo_id = $modulos[0]['id'];
         }
         
-        // Cargar módulos
-        $stmt = $this->conn->prepare("
-            SELECT id, titulo, descripcion, orden FROM modulos
-            WHERE curso_id = ?
-            ORDER BY orden ASC
-        ");
-        $stmt->execute([$course_id]);
-        $data['modulos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        // Si no se proporciona module_id, usar el primer módulo
-        if (!$module_id && !empty($data['modulos'])) {
-            $module_id = $data['modulos'][0]['id'];
-        }
-    
-        // Cargar módulo actual
-        if ($module_id) {
-            $stmt = $this->conn->prepare("
-                SELECT id, titulo, descripcion, orden FROM modulos
-                WHERE id = ? AND curso_id = ?
-            ");
-            $stmt->execute([$module_id, $course_id]);
-            $data['moduloActual'] = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$data['moduloActual']) {
-                return ['error' => 'Módulo no encontrado para este curso'];
+        // Obtener el módulo actual
+        $moduloActual = null;
+        foreach ($modulos as $modulo) {
+            if ($modulo['id'] == $modulo_id) {
+                $moduloActual = $modulo;
+                break;
             }
         }
-    
-        // Cargar contenidos para cada módulo
-        foreach ($data['modulos'] as $modulo) {
-            $stmt = $this->conn->prepare("
-                SELECT id, titulo, tipo, contenido, orden 
-                FROM contenido_modular
-                WHERE modulo_id = ?
-                ORDER BY orden ASC
-            ");
+        
+        // Obtener contenidos del módulo actual
+        $contenidos = [];
+        $contenidosPorModulo = [];
+        
+        if ($moduloActual) {
+            $sql = "SELECT * FROM contenido_modular WHERE modulo_id = ? ORDER BY orden ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$modulo_id]);
+            $contenidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Si no hay contenido seleccionado, usar el primero
+            if ($contenido_id == 0 && !empty($contenidos)) {
+                $contenido_id = $contenidos[0]['id'];
+            }
+        }
+        
+        // Obtener el contenido actual
+        $contenidoActual = null;
+        foreach ($contenidos as $contenido) {
+            if ($contenido['id'] == $contenido_id) {
+                $contenidoActual = $contenido;
+                break;
+            }
+        }
+        
+        // Obtener todos los contenidos por módulo para la navegación
+        foreach ($modulos as $modulo) {
+            $sql = "SELECT * FROM contenido_modular WHERE modulo_id = ? ORDER BY orden ASC";
+            $stmt = $this->conn->prepare($sql);
             $stmt->execute([$modulo['id']]);
-            $data['contenidosPorModulo'][$modulo['id']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $contenidosPorModulo[$modulo['id']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-    
-        // Cargar contenidos para el módulo actual
-        if ($module_id) {
-            $stmt = $this->conn->prepare("
-                SELECT id, titulo, tipo, contenido, orden 
-                FROM contenido_modular
-                WHERE modulo_id = ?
-                ORDER BY orden ASC
-            ");
-            $stmt->execute([$module_id]);
-            $data['contenidos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            // Si no se proporciona content_id, usar el primer contenido
-            if (!$content_id && !empty($data['contenidos'])) {
-                $content_id = $data['contenidos'][0]['id'];
+        
+        // Construir navegación anterior/siguiente
+        $navegacion = ['anterior' => null, 'siguiente' => null];
+        
+        // Encontrar índice del contenido actual
+        $indiceActual = -1;
+        $indiceModuloActual = -1;
+        
+        // Primero, encontrar el índice del módulo actual
+        foreach ($modulos as $i => $modulo) {
+            if ($modulo['id'] == $modulo_id) {
+                $indiceModuloActual = $i;
+                break;
             }
         }
-    
-        // Cargar contenido actual
-        if ($content_id) {
-            $stmt = $this->conn->prepare("
-                SELECT id, titulo, tipo, contenido, orden 
-                FROM contenido_modular
-                WHERE id = ? AND modulo_id = ?
-            ");
-            $stmt->execute([$content_id, $module_id]);
-            $data['contenidoActual'] = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$data['contenidoActual']) {
-                return ['error' => 'Contenido no encontrado para este módulo'];
-            }
-            
-            // Cargar navegación
-            if ($data['contenidoActual']) {
-                // Contenido anterior en el mismo módulo
-                $stmt = $this->conn->prepare("
-                    SELECT id, modulo_id, titulo FROM contenido_modular
-                    WHERE modulo_id = ? AND orden < ?
-                    ORDER BY orden DESC
-                    LIMIT 1
-                ");
-                $stmt->execute([$module_id, $data['contenidoActual']['orden']]);
-                $data['navegacion']['anterior'] = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-                // Siguiente contenido en el mismo módulo
-                $stmt = $this->conn->prepare("
-                    SELECT id, modulo_id, titulo FROM contenido_modular
-                    WHERE modulo_id = ? AND orden > ?
-                    ORDER BY orden ASC
-                    LIMIT 1
-                ");
-                $stmt->execute([$module_id, $data['contenidoActual']['orden']]);
-                $data['navegacion']['siguiente'] = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                // Si no hay contenido siguiente en este módulo, buscar el primer contenido del siguiente módulo
-                if (!$data['navegacion']['siguiente']) {
-                    $stmt = $this->conn->prepare("
-                        SELECT id, titulo FROM modulos
-                        WHERE curso_id = ? AND orden > (
-                            SELECT orden FROM modulos WHERE id = ?
-                        )
-                        ORDER BY orden ASC
-                        LIMIT 1
-                    ");
-                    $stmt->execute([$course_id, $module_id]);
-                    $nextModule = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    if ($nextModule) {
-                        $stmt = $this->conn->prepare("
-                            SELECT id, modulo_id, titulo FROM contenido_modular
-                            WHERE modulo_id = ?
-                            ORDER BY orden ASC
-                            LIMIT 1
-                        ");
-                        $stmt->execute([$nextModule['id']]);
-                        $data['navegacion']['siguiente'] = $stmt->fetch(PDO::FETCH_ASSOC);
-                        
-                        if ($data['navegacion']['siguiente']) {
-                            $data['navegacion']['siguiente']['moduloTitulo'] = $nextModule['titulo'];
-                        }
-                    }
-                }
-                
-                // Si no hay contenido anterior en este módulo, buscar el último contenido del módulo anterior
-                if (!$data['navegacion']['anterior']) {
-                    $stmt = $this->conn->prepare("
-                        SELECT id, titulo FROM modulos
-                        WHERE curso_id = ? AND orden < (
-                            SELECT orden FROM modulos WHERE id = ?
-                        )
-                        ORDER BY orden DESC
-                        LIMIT 1
-                    ");
-                    $stmt->execute([$course_id, $module_id]);
-                    $prevModule = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    if ($prevModule) {
-                        $stmt = $this->conn->prepare("
-                            SELECT id, modulo_id, titulo FROM contenido_modular
-                            WHERE modulo_id = ?
-                            ORDER BY orden DESC
-                            LIMIT 1
-                        ");
-                        $stmt->execute([$prevModule['id']]);
-                        $data['navegacion']['anterior'] = $stmt->fetch(PDO::FETCH_ASSOC);
-                        
-                        if ($data['navegacion']['anterior']) {
-                            $data['navegacion']['anterior']['moduloTitulo'] = $prevModule['titulo'];
-                        }
-                    }
+        
+        // Luego, si hay un módulo actual, encontrar el índice del contenido actual
+        if ($indiceModuloActual >= 0 && !empty($contenidos)) {
+            foreach ($contenidos as $i => $contenido) {
+                if ($contenido['id'] == $contenido_id) {
+                    $indiceActual = $i;
+                    break;
                 }
             }
+        }
+        
+        // Configurar navegación previa
+        if ($indiceActual > 0) {
+            // Contenido anterior en el mismo módulo
+            $navegacion['anterior'] = [
+                'id' => $contenidos[$indiceActual - 1]['id'],
+                'modulo_id' => $modulo_id
+            ];
+        } elseif ($indiceModuloActual > 0) {
+            // Último contenido del módulo anterior
+            $moduloAnterior = $modulos[$indiceModuloActual - 1];
+            $contenidosModuloAnterior = $contenidosPorModulo[$moduloAnterior['id']];
             
-            // Si es de tipo 'quiz', cargar las preguntas asociadas
-            if ($data['contenidoActual']['tipo'] === 'quiz') {
-                $stmt = $this->conn->prepare("
-                    SELECT id, pregunta, opciones, respuesta_correcta
-                    FROM quizzes
-                    WHERE modulo_id = ?
-                ");
-                $stmt->execute([$module_id]);
-                $data['contenidoActual']['preguntas'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($contenidosModuloAnterior)) {
+                $ultimoContenido = end($contenidosModuloAnterior);
+                $navegacion['anterior'] = [
+                    'id' => $ultimoContenido['id'],
+                    'modulo_id' => $moduloAnterior['id']
+                ];
             }
         }
-    
-        // Agregar información adicional del curso
-        $data['informacionCurso'] = [
-            'id' => $curso['id'],
-            'nombre' => $curso['nombre'],
-            'descripcion' => $curso['descripcion']
+        
+        // Configurar navegación siguiente
+        if ($indiceActual >= 0 && $indiceActual < count($contenidos) - 1) {
+            // Contenido siguiente en el mismo módulo
+            $navegacion['siguiente'] = [
+                'id' => $contenidos[$indiceActual + 1]['id'],
+                'modulo_id' => $modulo_id
+            ];
+        } elseif ($indiceModuloActual >= 0 && $indiceModuloActual < count($modulos) - 1) {
+            // Primer contenido del módulo siguiente
+            $moduloSiguiente = $modulos[$indiceModuloActual + 1];
+            $contenidosModuloSiguiente = $contenidosPorModulo[$moduloSiguiente['id']];
+            
+            if (!empty($contenidosModuloSiguiente)) {
+                $primerContenido = $contenidosModuloSiguiente[0];
+                $navegacion['siguiente'] = [
+                    'id' => $primerContenido['id'],
+                    'modulo_id' => $moduloSiguiente['id']
+                ];
+            }
+        }
+        
+        return [
+            'modulos' => $modulos,
+            'moduloActual' => $moduloActual,
+            'contenidos' => $contenidos,
+            'contenidoActual' => $contenidoActual,
+            'contenidosPorModulo' => $contenidosPorModulo,
+            'navegacion' => $navegacion
         ];
-    
-        return $data;
     }
 }
 
