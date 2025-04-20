@@ -291,12 +291,19 @@ class CourseContent {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$curso_id]);
         $modulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+    
+        // Depuración: Verificar si se obtuvieron módulos
+        if (empty($modulos)) {
+            error_log("No se encontraron módulos para el curso con ID: $curso_id");
+        } else {
+            error_log("Módulos encontrados: " . print_r($modulos, true));
+        }
+    
         // Si no hay módulo seleccionado, usar el primero
         if ($modulo_id == 0 && !empty($modulos)) {
             $modulo_id = $modulos[0]['id'];
         }
-        
+    
         // Obtener el módulo actual
         $moduloActual = null;
         foreach ($modulos as $modulo) {
@@ -305,23 +312,38 @@ class CourseContent {
                 break;
             }
         }
-        
+    
+        // Depuración: Verificar si se encontró el módulo actual
+        if (!$moduloActual) {
+            error_log("No se encontró el módulo con ID: $modulo_id");
+        } else {
+            error_log("Módulo actual encontrado: " . print_r($moduloActual, true));
+        }
+    
         // Obtener contenidos del módulo actual
         $contenidos = [];
         $contenidosPorModulo = [];
-        
+    
         if ($moduloActual) {
+            // Obtener contenidos del módulo actual desde la tabla contenido_modular
             $sql = "SELECT * FROM contenido_modular WHERE modulo_id = ? ORDER BY orden ASC";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$modulo_id]);
             $contenidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+    
+            // Depuración: Verificar si se obtuvieron contenidos
+            if (empty($contenidos)) {
+                error_log("No se encontraron contenidos para el módulo con ID: $modulo_id");
+            } else {
+                error_log("Contenidos encontrados: " . print_r($contenidos, true));
+            }
+    
             // Si no hay contenido seleccionado, usar el primero
             if ($contenido_id == 0 && !empty($contenidos)) {
                 $contenido_id = $contenidos[0]['id'];
             }
         }
-        
+    
         // Obtener el contenido actual
         $contenidoActual = null;
         foreach ($contenidos as $contenido) {
@@ -330,7 +352,14 @@ class CourseContent {
                 break;
             }
         }
-        
+    
+        // Depuración: Verificar si se encontró el contenido actual
+        if (!$contenidoActual) {
+            error_log("No se encontró el contenido con ID: $contenido_id");
+        } else {
+            error_log("Contenido actual encontrado: " . print_r($contenidoActual, true));
+        }
+    
         // Obtener todos los contenidos por módulo para la navegación
         foreach ($modulos as $modulo) {
             $sql = "SELECT * FROM contenido_modular WHERE modulo_id = ? ORDER BY orden ASC";
@@ -338,14 +367,14 @@ class CourseContent {
             $stmt->execute([$modulo['id']]);
             $contenidosPorModulo[$modulo['id']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        
+    
         // Construir navegación anterior/siguiente
         $navegacion = ['anterior' => null, 'siguiente' => null];
-        
+    
         // Encontrar índice del contenido actual
         $indiceActual = -1;
         $indiceModuloActual = -1;
-        
+    
         // Primero, encontrar el índice del módulo actual
         foreach ($modulos as $i => $modulo) {
             if ($modulo['id'] == $modulo_id) {
@@ -353,7 +382,7 @@ class CourseContent {
                 break;
             }
         }
-        
+    
         // Luego, si hay un módulo actual, encontrar el índice del contenido actual
         if ($indiceModuloActual >= 0 && !empty($contenidos)) {
             foreach ($contenidos as $i => $contenido) {
@@ -363,7 +392,7 @@ class CourseContent {
                 }
             }
         }
-        
+    
         // Configurar navegación previa
         if ($indiceActual > 0) {
             // Contenido anterior en el mismo módulo
@@ -375,7 +404,7 @@ class CourseContent {
             // Último contenido del módulo anterior
             $moduloAnterior = $modulos[$indiceModuloActual - 1];
             $contenidosModuloAnterior = $contenidosPorModulo[$moduloAnterior['id']];
-            
+    
             if (!empty($contenidosModuloAnterior)) {
                 $ultimoContenido = end($contenidosModuloAnterior);
                 $navegacion['anterior'] = [
@@ -384,7 +413,7 @@ class CourseContent {
                 ];
             }
         }
-        
+    
         // Configurar navegación siguiente
         if ($indiceActual >= 0 && $indiceActual < count($contenidos) - 1) {
             // Contenido siguiente en el mismo módulo
@@ -396,7 +425,7 @@ class CourseContent {
             // Primer contenido del módulo siguiente
             $moduloSiguiente = $modulos[$indiceModuloActual + 1];
             $contenidosModuloSiguiente = $contenidosPorModulo[$moduloSiguiente['id']];
-            
+    
             if (!empty($contenidosModuloSiguiente)) {
                 $primerContenido = $contenidosModuloSiguiente[0];
                 $navegacion['siguiente'] = [
@@ -405,7 +434,7 @@ class CourseContent {
                 ];
             }
         }
-        
+    
         return [
             'modulos' => $modulos,
             'moduloActual' => $moduloActual,
@@ -415,6 +444,7 @@ class CourseContent {
             'navegacion' => $navegacion
         ];
     }
+    
 }
 
 class Security {

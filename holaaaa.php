@@ -379,13 +379,23 @@ if (count($result) > 0) {
 } else {
     // No hay cursos
     echo '<div class="bg-light rounded p-4 text-center">
-            <p class="mb-0">No tienes cursos activos actualmente.</p>
-            <a href="create_course.php" class="btn btn-primary mt-3">
-                <i class="fas fa-plus mr-2"></i> Crear tu primer curso
-            </a>
-          </div>';
+    <p class="mb-0">No tienes cursos activos actualmente.</p>
+    <button id="crearCursoBtn" class="btn btn-primary mt-3">
+        <i class="fas fa-plus mr-2"></i> Crear tu primer curso
+    </button>
+</div>';
 }
 ?>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('crearCursoBtn').addEventListener('click', function() {
+        window.location.href = 'crear_curso.php#crearCurso';
+    });
+});
+</script>
+
 
                 </div>
 

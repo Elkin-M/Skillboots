@@ -5,10 +5,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'] ?? '';
     $contraseña = $_POST['contraseña'] ?? '';
     $nombre = $_POST['nombre'] ?? '';
+    $apellido = $_POST['apellido'] ?? '';
     $rol = $_POST['rol'] ?? ''; // Agregamos el rol
 
     // Validar que los campos no estén vacíos
-    if (empty($email) || empty($contraseña) || empty($nombre) || empty($rol)) {
+    if (empty($email) || empty($contraseña) || empty($nombre) || empty($rol) || empty($apellido)) {
         echo "Todos los campos son obligatorios.";
         exit();
     }
@@ -36,10 +37,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contraseñaHash = password_hash($contraseña, PASSWORD_DEFAULT);
 
     // Insertar el nuevo usuario en la base de datos incluyendo el rol
-    $stmt = $conn->prepare("INSERT INTO usuarios (email, password, name, rol) VALUES (:email, :password, :nombre, :rol)");
+    $stmt = $conn->prepare("INSERT INTO usuarios (email, password, name, lastname, rol) VALUES (:email, :password, :nombre, :lastname, :rol)");
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->bindParam(':password', $contraseñaHash, PDO::PARAM_STR);
     $stmt->bindParam(':nombre', $nombre, PDO::PARAM_STR);
+    $stmt->bindParam(':lastname', $apellido, PDO::PARAM_STR);
     $stmt->bindParam(':rol', $rol, PDO::PARAM_STR);
 
     if ($stmt->execute()) {

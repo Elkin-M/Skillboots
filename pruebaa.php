@@ -385,8 +385,8 @@ $userName = obtenerNombreUsuario($userId);
                                             <small>Última actividad: <?php echo $curso['ultima_actividad']; ?></small>
                                         </div>
                                     </div>
-                                    <a href="ver-cursos.php?id=<?php echo $curso['id']; ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
-                                </div>
+                                    <a href="claude.php?id=<?php echo htmlspecialchars($curso['id']); ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
+                                    </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
