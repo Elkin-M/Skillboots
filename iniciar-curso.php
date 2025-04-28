@@ -531,8 +531,10 @@ if (isset($_SESSION['success_message'])) {
             </div>
         </div>
 
+
+        
         <!-- Contenido principal -->
-        <div class="col-lg-9 main-content">
+        <div class="col-lg-6 main-content">
             <div id="loading-indicator" class="d-none">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Cargando...</span>
@@ -550,8 +552,41 @@ if (isset($_SESSION['success_message'])) {
                 </div>
             <?php endif; ?>
         </div>
+         <!-- Nueva barra lateral derecha -->
+        <div class="col-lg-3 right-sidebar">
+            <!-- Calendario -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Calendario</h5>
+                </div>
+                <div class="card-body">
+                    <div id="calendar-container"></div>
+                    <div class="d-flex justify-content-center mt-3">
+                        <a href="#" class="btn btn-sm btn-outline-primary" id="calendar-completo">Calendario completo</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary ms-2" id="exportar-calendario">Importar/Exportar Calendarios</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Usuarios en línea -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Usuarios en línea</h5>
+                </div>
+                <div class="card-body">
+                    <div id="usuarios-online">
+                        <div class="online-count"><span id="total-usuarios">0</span> usuarios online (últimos 5 minutos)</div>
+                        <ul class="list-group online-users-list" id="lista-usuarios-online">
+                            <!-- Los usuarios en línea se cargarán aquí -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
 
 <!-- Toast para notificaciones -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -567,7 +602,10 @@ if (isset($_SESSION['success_message'])) {
         </div>
     </div>
 </div>
-
+<div class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-columns"></i>
+    </div>
+    
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
         <div class="row pt-5">
@@ -639,6 +677,7 @@ if (isset($_SESSION['success_message'])) {
 
 <!-- JavaScript necesario -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./js/calendario.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Module globals
@@ -778,202 +817,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 /* Global styles */
-:root {
-  --primary-color: #0d6efd;
-  --secondary-color: #6c757d;
-  --success-color: #198754;
-  --light-bg: #f8f9fa;
-  --border-color: #dee2e6;
-  --text-color: #495057;
-  --white: #ffffff;
-}
-
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Roboto', sans-serif;
-}
-
-.container-fluid {
-  flex: 1;
-  padding: 0;
-}
-
-/* Course sidebar styles */
-.sidebar {
-  background-color: var(--light-bg);
-  height: calc(100vh - 70px);
-  overflow-y: auto;
-  border-right: 1px solid var(--border-color);
-  padding: 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar-header {
-  padding: 1rem;
-  background-color: #e9ecef;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.sidebar-header h3 {
-  margin-bottom: 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-/* Progress indicators */
-.progress {
-  height: 0.75rem;
-  border-radius: 1rem;
-  background-color: #e9ecef;
-}
-
-.progress-bar {
-  background-color: var(--primary-color);
-  border-radius: 1rem;
-  transition: width 0.5s ease;
-}
-
-.progress-bar-success {
-  background-color: var(--success-color);
-}
-
-/* Accordion and content items */
-.accordion-button {
-  padding: 0.75rem 1rem;
-  font-weight: 500;
-}
-
-.accordion-button:not(.collapsed) {
-  background-color: #e7f1ff;
-  color: var(--primary-color);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
-}
-
-.accordion-button:focus {
-  box-shadow: none;
-  border-color: rgba(13, 110, 253, 0.25);
-}
-
-.list-group-item {
-  padding: 0;
-  border-left: none;
-  border-right: none;
-  transition: all 0.2s ease;
-}
-
-.contenido-link, .recurso-link, .actividad-link {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem 0.75rem 2rem;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.contenido-link:hover, .recurso-link:hover, .actividad-link:hover {
-  background-color: #f1f3f5;
-  transform: translateX(3px);
-}
-
-.contenido-link.active, .actividad-link.active {
-  background-color: #e7f1ff;
-  color: var(--primary-color);
-  border-left: 3px solid var(--primary-color);
-}
-
-.contenido-link.visto {
-  color: var(--success-color);
-}
-
-.actividad-link.completada {
-  color: var(--success-color);
-}
-
-/* Main content area */
-.main-content {
-  height: calc(100vh - 70px);
-  padding: 0;
-  overflow: hidden;
-}
-
-#contenido-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-  transition: opacity 0.3s ease;
-}
-
-/* Content display styles */
-.content-body {
-  margin: 1.5rem 0;
-  line-height: 1.6;
-}
-
-.content-body img {
-  max-width: 100%;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.content-body video, .content-body audio {
-  width: 100%;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
-/* Navigation buttons */
-.nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin: 1.5rem 0;
-}
-
-.btn-navigation {
-  padding: 0.5rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.btn-navigation:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Badges and indicators */
-.badge {
-  font-weight: 500;
-  padding: 0.35em 0.65em;
-  border-radius: 10rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 991.98px) {
-  .sidebar {
-    height: auto;
-    max-height: 300px;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .main-content {
-    height: auto;
-  }
-
-  #contenido-frame {
-    height: 600px;
-  }
-
-  .nav-buttons {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-}
 </style>
 
 </body>

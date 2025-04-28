@@ -94,7 +94,8 @@ if ($pageData['isLoggedIn']) {
         <div class="carousel-inner">
             <?php foreach ($carouselData as $index => $slide): ?>
                 <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>" style="min-height: 300px;">
-                    <img class="position-relative w-100" src="<?php echo $slide['image']; ?>" style="min-height: 300px; object-fit: cover;">
+                    
+                    <img class="position-relative w-100" src="<?php echo $slide['image']; ?>" style="z-index:-10;  min-height: 300px; object-fit: cover;">
                     <div class="carousel-caption d-flex align-items-center justify-content-center">
                         <div class="p-4" style="width: 100%; max-width: 900px;  border-radius: 15px;">
                             <h5 class="text-white text-uppercase mb-md-3" style="letter-spacing: 2px; font-weight: 600; text-align:center;"><?php echo $slide['title']; ?></h5>
@@ -183,9 +184,10 @@ $sql = "SELECT
         FROM
             class_sessions
         WHERE
-            instructor_id = :instructor_id AND start_time > NOW()
+            creado_por = :instructor_id 
+            AND CONCAT(fecha, ' ', hora_inicio) > NOW()
         ORDER BY
-            start_time ASC";
+            fecha ASC, hora_inicio ASC";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':instructor_id', $instructor_id, PDO::PARAM_INT);
 $stmt->execute();
@@ -196,14 +198,14 @@ if ($row) {
 
 // obtener la próxima clase dinámicamente
 $sql = "SELECT
-            DATE_FORMAT(start_time, '%d %b, %H:%i') as formatted_time
+            DATE_FORMAT(CONCAT(fecha, ' ', hora_inicio), '%d %b, %H:%i') as formatted_time
         FROM
             class_sessions
         WHERE
-            instructor_id = :instructor_id
-            AND start_time > NOW()
+            creado_por = :instructor_id
+            AND CONCAT(fecha, ' ', hora_inicio) > NOW()
         ORDER BY
-            start_time ASC
+            fecha ASC, hora_inicio ASC
         LIMIT 1";
 
 $stmt = $conn->prepare($sql);
@@ -854,5 +856,24 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #fff;
 }
 </style>
+
+<div class="chatbot">
+<script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '68099233346844a0cbf6dd37' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
+</div>
 </body>
 </html>

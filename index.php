@@ -132,9 +132,10 @@ if ($pageData['isLoggedIn']) {
         </ol>
         <div class="carousel-inner">
             <?php foreach ($carouselData as $index => $slide): ?>
-                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>" 
+                <div style="min-height: 300px;" class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?> " 
     style="min-height: 300px; <?php echo $isLoggedIn ? 'height: 600px;' : ''; ?>">
-                    <img class="position-relative w-100" src="<?php echo $slide['image']; ?>" style="min-height: 300px; object-fit: cover;">
+                    <img class="position-relative w-100" src="<?php echo $slide['image']; ?>" style="min-height: 300px; object-fit: cover; display:flex; flex-wrap: no-wrap;"
+                         alt="">
                     <div class="carousel-caption d-flex align-items-center justify-content-center">
                         <div class="p-5" style="width: 100%; max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-md-3"><?php echo $slide['title']; ?></h5>
@@ -741,6 +742,24 @@ if (isset($pageData['isLoggedIn']) && $pageData['isLoggedIn']) {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <div class="chatbot">
+<script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '68099233346844a0cbf6dd37' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
+</div>
 </body>
 
 </html>

@@ -26,8 +26,8 @@ $rol = $_SESSION['user_rol'];
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/notificacion.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
+    <link href="./css/notificacion.css" rel="stylesheet">
 </head>
 
 
@@ -159,7 +159,7 @@ $rol = $_SESSION['user_rol'];
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid d-none d-lg-block">
-        <div class="nav-bar row align-items-center py-4 px-xl-5">
+        <div class="nav-bar row align-items-center py-4 px-xl-5" style="flex-wrap: nowrap;">
             <div class="col-lg-3">
                 <a href="" class="text-decoration-none">
                     <h1 class="m-0"><span class="text-primary">SKILL</span>BOOTS</h1>

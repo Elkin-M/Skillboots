@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $descripcion = isset($unidad['descripcion']) ? $unidad['descripcion'] : '';
                 $orden = $index + 1; // Usar el índice como orden
 
-                // Insertar en la tabla modulos (antes "unidades")
+                // Insertar en la tabla modulos
                 $sql = "INSERT INTO modulos (curso_id, titulo, descripcion, orden)
                         VALUES (:curso_id, :titulo, :descripcion, :orden)";
                 $stmt = $conn->prepare($sql);
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $modulo_id = $conn->lastInsertId(); // ID del módulo recién insertado
 
-                // Insertar recursos
+                // Insertar recursos - Corregido para usar modulo_id consistentemente
                 if (isset($unidad['recursos']) && is_array($unidad['recursos'])) {
                     foreach ($unidad['recursos'] as $recurso) {
                         // Skip si no hay título
@@ -105,10 +105,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $contenido_recurso = isset($recurso['contenido']) ? $recurso['contenido'] : '';
                         $obligatorio_recurso = isset($recurso['obligatorio']) ? 1 : 0;
                         $url_recurso = isset($recurso['url']) ? $recurso['url'] : '';
+                        $texto_contenido = isset($recurso['texto_contenido']) ? $recurso['texto_contenido'] : '';
 
-                        // En la tabla recursos, el campo se llama unidad_id pero guardamos el modulo_id
-                        $sql = "INSERT INTO recursos (unidad_id, titulo, tipo, contenido, obligatorio, url)
-                                VALUES (:modulo_id, :titulo, :tipo, :contenido, :obligatorio, :url)";
+                        // Corregido para usar el campo unidad_id para almacenar modulo_id
+                        $sql = "INSERT INTO recursos (unidad_id, titulo, tipo, contenido, obligatorio, url, texto_contenido)
+                                VALUES (:modulo_id, :titulo, :tipo, :contenido, :obligatorio, :url, :texto_contenido)";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute([
                             ':modulo_id' => $modulo_id,
@@ -116,16 +117,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ':tipo' => $tipo_recurso,
                             ':contenido' => $contenido_recurso,
                             ':obligatorio' => $obligatorio_recurso,
-                            ':url' => $url_recurso
+                            ':url' => $url_recurso,
+                            ':texto_contenido' => $texto_contenido
                         ]);
 
                         $contador_lecciones++;
                     }
                 }
 
-                // Insertar actividades
+                // Insertar actividades - Corregido para usar modulo_id consistentemente
                 if (isset($unidad['actividades']) && is_array($unidad['actividades'])) {
-                    foreach ($unidad['actividades'] as $actividad) {
+                    foreach ($unidad['actividades'] as $actividad_index => $actividad) {
                         // Skip si no hay título
                         if (empty($actividad['titulo'])) {
                             continue;
@@ -139,10 +141,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         $actividad['fecha_limite'] : null;
                         $tiempo = isset($actividad['tiempo']) ? $actividad['tiempo'] : 0;
                         $obligatorio_actividad = isset($actividad['obligatorio']) ? 1 : 0;
+                        $orden_actividad = $actividad_index + 1;
 
-                        // En la tabla actividades, el campo se llama unidad_id pero guardamos el modulo_id
-                        $sql = "INSERT INTO actividades (unidad_id, titulo, tipo, contenido, puntuacion, fecha_limite, tiempo, obligatorio)
-                                VALUES (:modulo_id, :titulo, :tipo, :contenido, :puntuacion, :fecha_limite, :tiempo, :obligatorio)";
+                        // Corregido para usar el campo unidad_id para almacenar modulo_id
+                        $sql = "INSERT INTO actividades (unidad_id, titulo, tipo, contenido, puntuacion, fecha_limite, tiempo, obligatorio, orden)
+                                VALUES (:modulo_id, :titulo, :tipo, :contenido, :puntuacion, :fecha_limite, :tiempo, :obligatorio, :orden)";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute([
                             ':modulo_id' => $modulo_id,
@@ -152,7 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ':puntuacion' => $puntuacion,
                             ':fecha_limite' => $fecha_limite,
                             ':tiempo' => $tiempo,
-                            ':obligatorio' => $obligatorio_actividad
+                            ':obligatorio' => $obligatorio_actividad,
+                            ':orden' => $orden_actividad
                         ]);
 
                         $actividad_id = $conn->lastInsertId(); // ID de la actividad recién insertada

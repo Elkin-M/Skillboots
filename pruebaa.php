@@ -97,25 +97,28 @@ function obtenerDatosEstudiante($userId) {
 
             // 3. Cursos recomendados (basados en la categoría de los cursos actuales)
             $categorias = array_column($cursos, 'categoria');
-            if (!empty($categorias)) {
-                $categoria = $categorias[0]; // Usar la primera categoría para recomendaciones
+           
+if (!empty($categorias)) {
+    $categoria = $categorias[0]; // Usar la primera categoría para recomendaciones
 
-                $stmt = $conn->prepare("
-                SELECT id, nombre AS titulo, imagen
-                FROM cursos
-                WHERE LOWER(categoria) LIKE LOWER(:categoria)  -- Permite búsquedas sin importar mayúsculas
-                AND estate = 'activo'
-                AND id NOT IN (
-                    SELECT curso_id FROM usuarios_cursos WHERE usuario_id = :userId
-                )
-                LIMIT 2
-            ");
-                $stmt->bindParam(':categoria', $categoria, PDO::PARAM_STR);
-                $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-                $stmt->execute();
+   
+    $stmt = $conn->prepare("
+    SELECT id, nombre AS titulo, imagen
+    FROM cursos
+    WHERE LOWER(categoria) LIKE LOWER(:categoria)  -- Permite búsquedas sin importar mayúsculas
+    AND estate = 'activo'
+    AND id NOT IN (
+        SELECT curso_id FROM usuarios_cursos WHERE usuario_id = :userId
+    )
+    LIMIT 2
+    ");
+    $stmt->bindParam(':categoria', $categoria, PDO::PARAM_STR);
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+    $stmt->execute();
 
-                $datos['cursos_recomendados'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            }
+    $datos['cursos_recomendados'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
             // 4. Certificados (cursos completados al 100%)
             $stmt = $conn->prepare("
@@ -298,6 +301,7 @@ $userName = obtenerNombreUsuario($userId);
 ?>
 
 <!-- Dashboard Principal -->
+
 <div class="container-fluid py-4">
     <div class="container">
         <div class="row">
@@ -385,7 +389,7 @@ $userName = obtenerNombreUsuario($userId);
                                             <small>Última actividad: <?php echo $curso['ultima_actividad']; ?></small>
                                         </div>
                                     </div>
-                                    <a href="claude.php?id=<?php echo htmlspecialchars($curso['id']); ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
+                                    <a href="course_details.php?id=<?php echo htmlspecialchars($curso['id']); ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
                                     </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
