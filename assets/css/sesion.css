@@ -1,0 +1,421 @@
+/* Estilos base */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    padding: 15px;
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 768px;
+    min-height: 480px;
+}
+
+/* Estilos de texto */
+.container p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+
+.container span {
+    font-size: 12px;
+}
+
+.container a {
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    margin: 15px 0 10px;
+    transition: color 0.3s ease;
+}
+
+.container a:hover {
+    color: #8b2300;
+}
+
+/* Estilos de botones */
+.container button {
+    background-color: #FF6600;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.container button:hover {
+    background-color: #ff8b3e;
+}
+
+.container button.hidden {
+    background-color: transparent;
+    border-color: #fff;
+}
+
+.container button.hidden:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos de formulario */
+.container form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+}
+
+.container input,
+.container select {
+    background-color: #f5f5f5;
+    border: none;
+    margin: 8px 0;
+    padding: 12px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+}
+
+.container input:focus,
+.container select:focus {
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(81, 45, 168, 0.3) inset;
+}
+
+/* Contenedores de formulario */
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Animaciones de cambio de panel */
+.container.active .sign-in {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.container.active .sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+}
+
+
+@keyframes show {
+
+    0%,
+    49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+/* Contenedor de alternancia */
+.toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    border-radius: 150px 0 0 100px;
+    z-index: 1000;
+}
+
+.container.active .toggle-container {
+    transform: translateX(-100%);
+    border-radius: 0 150px 100px 0;
+}
+
+/* Panel de alternancia */
+.toggle {
+    background-color: #FF6600;
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.container.active .toggle {
+    transform: translateX(50%);
+}
+
+/* Contenido del panel de alternancia */
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 30px;
+    text-align: center;
+    top: 0;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.toggle-left {
+    transform: translateX(-200%);
+}
+
+.container.active .toggle-left {
+    transform: translateX(0);
+}
+
+.toggle-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.mobile-nav {
+    display: none;
+}
+
+
+.container.active .toggle-right {
+    transform: translateX(200%);
+}
+
+/* Iconos sociales */
+.social-icons {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.social-icons a {
+    border: 1px solid #ccc;
+    border-radius: 20%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    transform: translateY(-2px);
+    border-color: #b95406;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.social-icons a svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover svg {
+    transform: scale(1.1);
+}
+
+.espacio {
+    margin-top: 15px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .container {
+        min-height: 600px;
+        height: auto;
+        margin: 10px 0;
+        border-radius: 20px;
+    }
+
+    .form-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        min-height: 500px;
+        transition: all 0.3s ease;
+    }
+
+    .sign-in,
+    .sign-up {
+        width: 100%;
+        left: 0;
+        top: 0;
+        position: absolute;
+        transition: opacity 0.5s ease;
+    }
+
+    .sign-up {
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .container.active .sign-in {
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .container.active .sign-up {
+        opacity: 1;
+        pointer-events: all;
+        z-index: 5;
+    }
+
+    .toggle-container {
+        display: none;
+    }
+
+    .container form {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+        min-height: 550px;
+    }
+
+    .container form {
+        padding: 20px 15px;
+    }
+
+    .container button {
+        padding: 10px 30px;
+    }
+
+    .social-icons a {
+        width: 35px;
+        height: 35px;
+        margin: 0 3px;
+    }
+
+    .social-icons a svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+}
+
+/* Estilos para pestañas de navegación móvil */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav-tabs {
+    display: inline-flex;
+    background-color: rgba(252, 136, 48, 0.9);
+    padding: 8px;
+    border-radius: 30px;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-tab {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.nav-tab.active {
+    background-color: white;
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-tab:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Media query para mostrar pestañas solo en móvil */
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Ajustar la apariencia en móvil para una mejor experiencia de usuario */
+    body {
+        padding-bottom: 80px;
+    }
+}
+
+/* Fix para evitar problemas con la interacción en formularios móviles */
+@media (max-width: 768px) {
+
+    .container.active .sign-in,
+    .container:not(.active) .sign-up {
+        visibility: hidden;
+    }
+}

@@ -1,0 +1,142 @@
+:root {
+    --primary: #FF6600;
+}
+
+.nav-link.active {
+    color: #fd7e14 !important;
+}
+
+.hola {
+    margin-left: 12px;
+    background-color: var(--primary);
+    border: 2px solid var(--primary);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.hola:hover {
+    transform: scale(1.1);
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Estilos adicionales para la nueva estructura */
+.course-section {
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.course-section-header {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+
+.course-section-content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+
+.resource-item, .activity-item {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resource-item {
+    border-left-color: #0d6efd;
+}
+
+.activity-item {
+    border-left-color: #fd7e14;
+}
+
+.circle-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.green-indicator {
+    background-color: #28a745;
+}
+
+.gray-indicator {
+    background-color: #adb5bd;
+}
+
+.section-title {
+    font-weight: 500;
+    margin: 15px 0 10px 0;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.content-details {
+    border-top: 1px dashed #dee2e6;
+    padding-top: 10px;
+}
+
+.quiz-question {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.quiz-question .card-header {
+    padding: 8px 12px;
+}
+
+.form-control-plaintext:focus {
+    outline: none;
+    border-bottom: 1px dashed #adb5bd;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.btn-orange {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-orange:hover {
+    background-color: #e05a00;
+    border-color: #e05a00;
+    color: white;
+}
+
+.text-orange {
+    color: var(--primary);
+}
+
+.border-dashed {
+    border-style: dashed;
+    cursor: pointer;
+}
+
+.border-dashed:hover {
+    background-color: #f8f9fa;
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
+
+    <title>Inicio De Sesion</title>
+    <link rel="stylesheet" href="../assets/css/sesion.css">
+
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <div class="mobile-nav">
+            <div class="mobile-nav-tabs">
+                <div class="nav-tab login-tab active" id="login-tab">Iniciar sesión</div>
+                <div class="nav-tab register-tab" id="register-tab">Registrarse</div>
+            </div>
+        </div>
+        <div class="form-container sign-up">
+            <form action="./prueba.php" method="POST" id="register-form">
+                <h1 style="font-size: 1.5rem; ">Crea Tu Cuenta</h1>
+                <input type="text" placeholder="Name" name="nombre" required>
+                <input type="text" placeholder="LastName" name="apellido" required>
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="password" placeholder="Password" name="contraseña" required>
+                <select name="rol" required class="form-control">
+                    <option value="">Seleccione un rol</option>
+                    <option value="admin">Administrador</option>
+                    <option value="profesor">Profesor</option>
+                    <option value="estudiante">Estudiante</option>
+                </select>
+                <button type="submit" class="botones">Registrate</button>
+                <span class="espacio">Ingresa tambien con</span>
+                <div class="social-icons">
+                    <!-- Íconos sociales aquí -->
+                </div>
+            </form>
+        </div>
+
+
+        <div class="form-container sign-in">
+            <form action="./login.php" method="POST" id="login-form">
+                <h1>Inicia Sesión</h1>
+                <span></span>
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="password" placeholder="Password" name="contraseña" required>
+                <a href="#">Olvidaste Tu Contraseña?</a>
+                <button type="submit">Iniciar</button>
+                <div class="social-icons">
+                    <!-- Íconos sociales aquí -->
+                </div>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Bienvenido de Vuelta!</h1>
+                    <p>Ingrese sus datos para utilizar todas nuestras funciones</p>
+                    <button class="hidden" id="login">Iniciar</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>
+                        <div class="col-lg-3">
+                            <a href="" class="text-decoration-none">
+                                <h1 class="m-0"><span style="color: #ffffff;">SKILL</span>BOOTS</h1>
+                            </a>
+                        </div>
+                    </h1>
+                    <p>Tu Portafolio De Cursos Online
+                        Avanzamos constantemente para ofrecerte mas servicios!</p>
+                    <button class="hidden" id="register">Registrate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script corregido -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener elementos del DOM
+            const container = document.getElementById('container');
+            const registerBtn = document.getElementById('register');
+            const loginBtn = document.getElementById('login');
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+
+            // Verificar que todos los elementos existen para evitar errores
+            if (!container) console.error('Elemento container no encontrado');
+
+            // Función para alternar entre formularios (versión mejorada)
+            function showLoginForm() {
+                container.classList.remove('active');
+                if (loginTab && registerTab) {
+                    loginTab.classList.add('active');
+                    registerTab.classList.remove('active');
+                }
+            }
+
+            function showRegisterForm() {
+                container.classList.add('active');
+                if (loginTab && registerTab) {
+                    loginTab.classList.remove('active');
+                    registerTab.classList.add('active');
+                }
+            }
+
+            // Event listeners para botones de escritorio
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showRegisterForm();
+                });
+            }
+
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showLoginForm();
+                });
+            }
+
+            // Event listeners para pestañas móviles
+            if (loginTab) {
+                loginTab.addEventListener('click', showLoginForm);
+            }
+
+            if (registerTab) {
+                registerTab.addEventListener('click', showRegisterForm);
+            }
+
+            // Validación de formularios antes del envío
+            if (registerForm) {
+                registerForm.addEventListener('submit', function (event) {
+                    if (!this.checkValidity()) {
+                        event.preventDefault();
+                        alert('Por favor, completa todos los campos requeridos.');
+                    }
+                });
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (event) {
+                    if (!this.checkValidity()) {
+                        event.preventDefault();
+                        alert('Por favor, completa todos los campos requeridos.');
+                    }
+                });
+            }
+
+            console.log('Script inicializado correctamente');
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</body>
+
+</html>
