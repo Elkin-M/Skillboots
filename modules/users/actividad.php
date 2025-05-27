@@ -1,17 +1,15 @@
 <?php
 session_start();
-require_once 'conexion/db.php';
+require_once '../../conexion/db.php';
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
-    // Redirigir al login si no está autenticado
     header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit;
 }
 
 // Verificar si se proporcionó un ID de actividad válido
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    // Redirigir a la página principal si no hay ID válido
     header('Location: index.php');
     exit;
 }
@@ -47,7 +45,6 @@ try {
     ]);
 
     if ($stmt->rowCount() === 0) {
-        // Si no está inscrito, redirigir a la página del curso
         header('Location: curso.php?id=' . $curso_id);
         exit;
     }
@@ -75,13 +72,11 @@ try {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Procesar las respuestas del usuario
         $respuestas_usuario = $_POST['respuestas'];
         $puntuacion_total = 0;
         $puntuacion_obtenida = 0;
 
         foreach ($preguntas as $pregunta) {
-            // Usar un valor por defecto de 1 si no existe puntuacion
             $puntos_pregunta = isset($pregunta['puntuacion']) ? $pregunta['puntuacion'] : 1;
             $puntuacion_total += $puntos_pregunta;
             $respuesta_correcta = $pregunta['respuesta_correcta'];
@@ -92,16 +87,12 @@ try {
             }
         }
         
-        // Evitar división por cero
         if ($puntuacion_total > 0) {
             $calificacion = ($puntuacion_obtenida / $puntuacion_total) * 100;
         } else {
-            $calificacion = 0; // O cualquier otro valor predeterminado
+            $calificacion = 0;
         }
 
-        $calificacion = ($puntuacion_obtenida / $puntuacion_total) * 100;
-
-        // Guardar el resultado en la base de datos
         $sql = "INSERT INTO actividades_completadas (actividad_id, usuario_id, calificacion, fecha_completado) VALUES (:actividad_id, :user_id, :calificacion, NOW())";
         $stmt = $conn->prepare($sql);
         $stmt->execute([
@@ -110,10 +101,7 @@ try {
             ':calificacion' => $calificacion
         ]);
 
-        // Notificar al iframe padre que la actividad ha sido completada
         echo "<script>window.parent.postMessage({ action: 'actividadCompletada', actividadId: $actividad_id }, '*');</script>";
-
-        // Redirigir para evitar reenvío del formulario
         header('Location: actividad.php?id=' . $actividad_id);
         exit;
     }
@@ -124,15 +112,20 @@ try {
     exit;
 }
 
-// Construir las rutas base para enlaces
-$base_path = dirname($_SERVER['PHP_SELF']);
-if (substr($base_path, -1) !== '/') {
-    $base_path .= '/';
-}
+// Definir datos antes de incluir archivos
+require_once '../../auth/auth.php';
+$isLoggedIn = Auth::isAuthenticated();
+$userRole = $isLoggedIn ? Auth::getUserRole() : 'visitante';
+$userName = $isLoggedIn && isset($_SESSION['user_name']) ? $_SESSION['user_name'] : '';
 
-// Si está embebido, usar una plantilla reducida
+$pageData = [
+    'isLoggedIn' => $isLoggedIn,
+    'userRole' => $userRole,
+    'userName' => $userName
+];
+
+// Si está embebido, usar plantilla reducida
 if ($modo_embebido) {
-    // Plantilla embebida (sin menú ni footer completo)
     ?>
     <!DOCTYPE html>
     <html lang="es">
@@ -140,88 +133,24 @@ if ($modo_embebido) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo htmlspecialchars($actividad['titulo']); ?></title>
+        <!-- ESTILOS ANTES DE INCLUIR NAVBAR -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <!-- Estilos adicionales para navbar -->
+        <link rel="stylesheet" href="../../assets/css/navbar.css">
+        <link rel="stylesheet" href="../../css/style.css">
     </head>
     <body>
+        <?php include "../../includes/navbar-estu.php"; ?>
         <div class="container mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <h1><?php echo htmlspecialchars($actividad['titulo']); ?></h1>
-                    <?php if ($actividad_completada): ?>
-                        <div class="alert alert-success">
-                            <p>Actividad completada el <?php echo htmlspecialchars($fecha_completado); ?>.</p>
-                            <p>Tu calificación: <?php echo $calificacion; ?>%</p>
-                        </div>
-                    <?php else: ?>
-                        <form method="POST" action="">
-<?php foreach ($preguntas as $pregunta): ?>
-    <div class="mb-3">
-        <h5><?php echo htmlspecialchars($pregunta['texto']); ?></h5>
-        <?php
-        // Obtener opciones de la tabla de opciones
-        $sql_opciones = "SELECT * FROM opciones WHERE pregunta_id = :pregunta_id";
-        $stmt_opciones = $conn->prepare($sql_opciones);
-        $stmt_opciones->execute([':pregunta_id' => $pregunta['id']]);
-        $opciones_pregunta = $stmt_opciones->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Letras para las opciones
-        $letras = ['A', 'B', 'C', 'D'];
-        $i = 0;
-        
-        foreach ($opciones_pregunta as $opcion):
-            if ($i < count($letras)):
-                $letra = $letras[$i];
-                ?>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="respuestas[<?php echo $pregunta['id']; ?>]" 
-                        id="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>" 
-                        value="<?php echo $letra; ?>"
-                        <?php echo ($opcion['es_correcta'] == 1 && $pregunta['respuesta_correcta'] == $letra) ? 'data-correct="true"' : ''; ?>>
-                    <label class="form-check-label" for="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>">
-                        <?php echo $letra . '. ' . htmlspecialchars($opcion['texto']); ?>
-                    </label>
-                </div>
-                <?php
-                $i++;
-            endif;
-        endforeach;
-        ?>
-    </div>
-<?php endforeach; ?>
-                            <button type="submit" class="btn btn-primary">Enviar respuestas</button>
-                        </form>
-                    <?php endif; ?>
-                </div>
-            </div>
+            <!-- Contenido embebido aquí -->
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     <?php
 } else {
-    // Plantilla completa (con menú y footer)
-    require_once '../auth/auth.php';
-
-    // Optimizar las llamadas a `Auth::isAuthenticated()`
-    $isLoggedIn = Auth::isAuthenticated();
-    $userRole = $isLoggedIn ? Auth::getUserRole() : 'visitante';
-    $userName = $isLoggedIn && isset($_SESSION['user_name']) ? $_SESSION['user_name'] : '';
-
-    // Definir los datos de la página
-    $pageData = [
-        'isLoggedIn' => $isLoggedIn,
-        'userRole' => $userRole,
-        'userName' => $userName
-    ];
-
-    // Incluir la navbar según el rol del usuario
-    if ($isLoggedIn && $userRole === 'estudiante') {
-        include 'navbar-estu.php'; // Navbar para estudiantes
-    } elseif ($pageData['userRole'] === 'profesor'){
-        include 'navbar-pro.php';
-    } else {
-        include '../includes/navbar.php';
-    }
+    // Plantilla completa
     ?>
     <!DOCTYPE html>
     <html lang="es">
@@ -229,131 +158,328 @@ if ($modo_embebido) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo htmlspecialchars($actividad['titulo']); ?></title>
+        
+        <!-- CARGAR TODOS LOS ESTILOS PRIMERO -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        
+        <!-- Estilos locales - AJUSTA ESTAS RUTAS SEGÚN TU ESTRUCTURA -->
+        <link rel="stylesheet" href="../../assets/css/style.css">
+        <link rel="stylesheet" href="../../css/navbar.css">
+        <link rel="stylesheet" href="../../css/main.css">
+        
+        <!-- DEBUG: Agregar estilos inline como fallback -->
+        <style>
+            .row>*{
+                flex-shrink: 3;
+                width: 20%;
+            }
+            /* ESTILOS DE RESPALDO PARA NAVBAR */
+            .navbar {
+                background-color: #fff !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,.1) !important;
+                padding: 1rem 0 !important;
+            }
+            .navbar-brand {
+                font-weight: bold !important;
+                color: #007bff !important;
+            }
+            .navbar-nav .nav-link {
+                color: #333 !important;
+                font-weight: 500 !important;
+                margin: 0 0.5rem !important;
+                transition: color 0.3s ease !important;
+            }
+            .navbar-nav .nav-link:hover {
+                color: #007bff !important;
+            }
+            .dropdown-menu {
+                border: none !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,.15) !important;
+            }
+            .btn-outline-primary {
+                border-color: #007bff !important;
+                color: #007bff !important;
+            }
+            .btn-outline-primary:hover {
+                background-color: #007bff !important;
+                color: white !important;
+            }
+            
+            /* ESTILOS PARA EL CONTENIDO */
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .actividad-container {
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+                padding: 40px;
+                margin-top: 30px;
+                margin-bottom: 30px;
+            }
+            .pregunta-card {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 10px;
+                padding: 25px;
+                margin-bottom: 25px;
+                border-left: 5px solid #007bff;
+                transition: transform 0.2s ease;
+            }
+            .pregunta-card:hover {
+                transform: translateY(-2px);
+            }
+            .form-check-label {
+                cursor: pointer;
+                padding: 10px 15px;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+                margin-left: 10px;
+            }
+            .form-check-label:hover {
+                background-color: #e3f2fd;
+                border-color: #2196f3;
+            }
+            .form-check-input:checked + .form-check-label {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            .btn-primary {
+                padding: 15px 40px;
+                font-size: 18px;
+                border-radius: 8px;
+                background: linear-gradient(45deg, #007bff, #0056b3);
+                border: none;
+                transition: all 0.3s ease;
+            }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+            }
+        </style>
     </head>
     <body>
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <h1><?php echo htmlspecialchars($actividad['titulo']); ?></h1>
-                    <?php if ($actividad_completada): ?>
-                        <div class="alert alert-success">
-                            <p>Actividad completada el <?php echo htmlspecialchars($fecha_completado); ?>.</p>
-                            <p>Tu calificación: <?php echo $calificacion; ?>%</p>
-                        </div>
-                    <?php else: ?>
-                        <form method="POST" action="">
-<?php foreach ($preguntas as $pregunta): ?>
-    <div class="mb-3">
-        <h5><?php echo htmlspecialchars($pregunta['texto']); ?></h5>
         <?php
-        // Obtener opciones de la tabla de opciones
-        $sql_opciones = "SELECT * FROM opciones WHERE pregunta_id = :pregunta_id";
-        $stmt_opciones = $conn->prepare($sql_opciones);
-        $stmt_opciones->execute([':pregunta_id' => $pregunta['id']]);
-        $opciones_pregunta = $stmt_opciones->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Letras para las opciones
-        $letras = ['A', 'B', 'C', 'D'];
-        $i = 0;
-        
-        foreach ($opciones_pregunta as $opcion):
-            if ($i < count($letras)):
-                $letra = $letras[$i];
-                ?>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="respuestas[<?php echo $pregunta['id']; ?>]" 
-                        id="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>" 
-                        value="<?php echo $letra; ?>"
-                        <?php echo ($opcion['es_correcta'] == 1 && $pregunta['respuesta_correcta'] == $letra) ? 'data-correct="true"' : ''; ?>>
-                    <label class="form-check-label" for="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>">
-                        <?php echo $letra . '. ' . htmlspecialchars($opcion['texto']); ?>
-                    </label>
-                </div>
-                <?php
-                $i++;
-            endif;
-        endforeach;
+        // INCLUIR NAVBAR DESPUÉS DE CARGAR ESTILOS
+        if ($isLoggedIn && $userRole === 'estudiante') {
+            include '../../includes/navbar-estu.php';
+        } elseif ($userRole === 'profesor'){
+            include '../../includes/navbar-pro.php';
+        } else {
+            include '../../includes/navbar.php';
+        }
         ?>
-    </div>
-<?php endforeach; ?>
-                            <button type="submit" class="btn btn-primary">Enviar respuestas</button>
-                        </form>
-                    <?php endif; ?>
+
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Información del curso -->
+                    <div class="alert alert-info">
+                        <h6 class="mb-1"><i class="fas fa-book me-2"></i>Curso: <?php echo htmlspecialchars($actividad['curso_nombre']); ?></h6>
+                        <small><i class="fas fa-layer-group me-2"></i>Módulo: <?php echo htmlspecialchars($actividad['modulo_titulo']); ?></small>
+                    </div>
+
+                    <div class="actividad-container">
+                        <div class="text-center mb-4">
+                            <h1 class="display-5 fw-bold text-primary"><?php echo htmlspecialchars($actividad['titulo']); ?></h1>
+                            <?php if (!empty($actividad['descripcion'])): ?>
+                                <p class="lead text-muted"><?php echo htmlspecialchars($actividad['descripcion']); ?></p>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($actividad_completada): ?>
+                            <div class="alert alert-success text-center">
+                                <i class="fas fa-trophy fa-3x mb-3"></i>
+                                <h3>¡Felicitaciones! Actividad Completada</h3>
+                                <p class="mb-2">Completada el <?php echo date('d/m/Y H:i', strtotime($fecha_completado)); ?></p>
+                                <h4><i class="fas fa-star me-2"></i>Tu calificación: <?php echo number_format($calificacion, 1); ?>%</h4>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Instrucciones:</strong> Lee cada pregunta cuidadosamente y selecciona la respuesta correcta.
+                            </div>
+
+                            <form method="POST" action="" id="actividadForm">
+                                <?php foreach ($preguntas as $index => $pregunta): ?>
+                                    <div class="pregunta-card">
+                                        <h5 class="mb-3">
+                                            <span class="badge bg-primary me-3"><?php echo $index + 1; ?></span>
+                                            <?php echo htmlspecialchars($pregunta['texto']); ?>
+                                        </h5>
+                                        
+                                        <?php
+                                        $sql_opciones = "SELECT * FROM opciones WHERE pregunta_id = :pregunta_id ORDER BY id";
+                                        $stmt_opciones = $conn->prepare($sql_opciones);
+                                        $stmt_opciones->execute([':pregunta_id' => $pregunta['id']]);
+                                        $opciones_pregunta = $stmt_opciones->fetchAll(PDO::FETCH_ASSOC);
+                                        
+                                        $letras = ['A', 'B', 'C', 'D'];
+                                        $i = 0;
+                                        
+                                        foreach ($opciones_pregunta as $opcion):
+                                            if ($i < count($letras)):
+                                                $letra = $letras[$i];
+                                                ?>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="respuestas[<?php echo $pregunta['id']; ?>]" 
+                                                        id="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>" 
+                                                        value="<?php echo $letra; ?>" required>
+                                                    <label class="form-check-label w-100" for="opcion_<?php echo $pregunta['id'] . '_' . $letra; ?>">
+                                                        <strong><?php echo $letra; ?>.</strong> <?php echo htmlspecialchars($opcion['texto']); ?>
+                                                    </label>
+                                                </div>
+                                                <?php
+                                                $i++;
+                                            endif;
+                                        endforeach;
+                                        ?>
+                                    </div>
+                                <?php endforeach; ?>
+                                
+                                <div class="text-center mt-5">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>Enviar Respuestas
+                                    </button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
-      
-    <!-- Footer Start -->
- <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
-        <div class="row pt-5">
-            <div class="col-lg-7 col-md-12">
-                <div class="row">
-                    <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                        <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
-                        <div class="d-flex justify-content-start mt-4">
-                            <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+
+        <!-- Footer -->
+        <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5 mt-5">
+            <div class="row pt-5">
+                <div class="col-lg-7 col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4">Contacto</h5>
+                            <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
+                            <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                            <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
                         </div>
-                    </div>
-                    <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
-                            <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 col-md-12 mb-5">
-                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
-                <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
-                <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4">Enlaces</h5>
+                            <div class="d-flex flex-column">
+                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Inicio</a>
+                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Cursos</a>
+                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Contacto</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="row">
-            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">&copy; <a href="#">Domain Name</a>. All Rights Reserved. Designed by <a href="https://htmlcodex.com">HTML Codex</a>
-                </p>
-            </div>
-            <div class="col-lg-6 text-center text-md-right">
-                <ul class="nav d-inline-flex">
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Privacy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Terms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">FAQs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Help</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
+
+        <!-- Scripts al final -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Validación del formulario
+            document.getElementById('actividadForm')?.addEventListener('submit', function(e) {
+                const preguntas = document.querySelectorAll('.pregunta-card');
+                let todasRespondidas = true;
+
+                preguntas.forEach(function(pregunta, index) {
+                    const radios = pregunta.querySelectorAll('input[type="radio"]');
+                    let preguntaRespondida = false;
+                    
+                    radios.forEach(function(radio) {
+                        if (radio.checked) {
+                            preguntaRespondida = true;
+                        }
+                    });
+
+                    if (!preguntaRespondida) {
+                        todasRespondidas = false;
+                        pregunta.style.border = '2px solid #dc3545';
+                    } else {
+                        pregunta.style.border = 'none';
+                    }
+                });
+
+                if (!todasRespondidas) {
+                    e.preventDefault();
+                    alert('Por favor, responde todas las preguntas.');
+                    return false;
+                }
+
+                return confirm('¿Estás seguro de enviar tus respuestas?');
+            });
+
+            // DEBUG: Verificar si los estilos se cargan
+            console.log('Página cargada');
+            console.log('Bootstrap cargado:', typeof bootstrap !== 'undefined');
+            
+            // Verificar archivos CSS
+            document.addEventListener('DOMContentLoaded', function() {
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                links.forEach(link => {
+                    link.onerror = function() {
+                        console.error('Error cargando CSS:', this.href);
+                    };
+                    link.onload = function() {
+                        console.log('CSS cargado:', this.href);
+                    };
+                });
+            });
+        </script>
     </body>
     </html>
     <?php
 }
+?>
+
+<!-- ARCHIVO DE DEBUG SEPARADO -->
+<?php
+/*
+CREA ESTE ARCHIVO COMO debug_navbar.php EN LA MISMA CARPETA:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Navbar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <h1>Testing Navbar Include</h1>
+    
+    <?php
+    echo "<p>Archivo actual: " . __FILE__ . "</p>";
+    echo "<p>Directorio actual: " . __DIR__ . "</p>";
+    
+    // Verificar si el archivo navbar existe
+    $navbar_path = "../../includes/navbar-estu.php";
+    if (file_exists($navbar_path)) {
+        echo "<p style='color: green;'>✓ Navbar file exists: $navbar_path</p>";
+        include $navbar_path;
+    } else {
+        echo "<p style='color: red;'>✗ Navbar file NOT found: $navbar_path</p>";
+        
+        // Intentar otras rutas
+        $possible_paths = [
+            "../includes/navbar-estu.php",
+            "includes/navbar-estu.php",
+            "./includes/navbar-estu.php"
+        ];
+        
+        foreach ($possible_paths as $path) {
+            if (file_exists($path)) {
+                echo "<p style='color: orange;'>Found at: $path</p>";
+            }
+        }
+    }
+    ?>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+*/
 ?>

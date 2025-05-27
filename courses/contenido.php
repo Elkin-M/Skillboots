@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'conexion/db.php';
+require_once '../conexion/db.php';
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
@@ -137,11 +137,11 @@ if ($modo_embebido) {
                             </video>
                         <?php elseif ($contenido['tipo'] == 'audio'): ?>
                             <audio controls class="w-100">
-                                <source src="<?php echo htmlspecialchars($contenido['url']); ?>" type="audio/mpeg">
+                                <source src="../<?php echo htmlspecialchars($contenido['url']); ?>" type="audio/mpeg">
                                 Tu navegador no soporta la etiqueta de audio.
                             </audio>
                         <?php elseif ($contenido['tipo'] == 'imagen'): ?>
-                            <img src="<?php echo htmlspecialchars($contenido['url']); ?>" class="img-fluid" alt="<?php echo htmlspecialchars($contenido['titulo']); ?>">
+                            <img src="../<?php echo htmlspecialchars($contenido['url']); ?>" class="img-fluid" alt="<?php echo htmlspecialchars($contenido['titulo']); ?>">
                         <?php endif; ?>
                     </div>
                     <div class="d-flex justify-content-between mt-4">
@@ -190,16 +190,16 @@ if ($modo_embebido) {
                             <p><?php echo nl2br(htmlspecialchars($contenido['contenido'])); ?></p>
                         <?php elseif ($contenido['tipo'] == 'video'): ?>
                             <video controls class="w-100">
-                                <source src="<?php echo htmlspecialchars($contenido['url']); ?>" type="video/mp4">
+                                <source src="../<?php echo htmlspecialchars($contenido['url']); ?>" type="video/mp4">
                                 Tu navegador no soporta la etiqueta de video.
                             </video>
                         <?php elseif ($contenido['tipo'] == 'audio'): ?>
                             <audio controls class="w-100">
-                                <source src="<?php echo htmlspecialchars($contenido['url']); ?>" type="audio/mpeg">
+                                <source src="../<?php echo htmlspecialchars($contenido['url']); ?>" type="audio/mpeg">
                                 Tu navegador no soporta la etiqueta de audio.
                             </audio>
                             <?php elseif ($contenido['tipo'] == 'imagen'): ?>
-    <img src="<?php echo htmlspecialchars($contenido['contenido']); ?>" class="img-fluid" alt="<?php echo htmlspecialchars($contenido['titulo']); ?>">
+    <img src="../<?php echo htmlspecialchars($contenido['contenido']); ?>" class="img-fluid" alt="<?php echo htmlspecialchars($contenido['titulo']); ?>">
 <?php endif; ?>
                     </div>
                     <div class="d-flex justify-content-between mt-4">

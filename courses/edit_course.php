@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../conexion/db.php';
-require_once '../roles/auth.php';
+require_once '../auth/auth.php';
 
 // Verificar si el usuario está autenticado
 if (!Auth::isAuthenticated()) {
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <?php include 'navbar-pro.php'; ?>
+    <?php include '../includes/navbar-pro.php'; ?>
 
     <div class="container mt-5">
         <div class="row">

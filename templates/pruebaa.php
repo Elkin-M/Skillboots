@@ -11,7 +11,7 @@ $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
 // Redirigir si es necesario
 if ($userId === 0) {
-    echo '<script>window.location.href = "sesion.html";</script>';
+    echo '<script>window.location.href = "sesion.php";</script>';
     exit;
 }
 
@@ -369,7 +369,7 @@ $userName = obtenerNombreUsuario($userId);
                         <?php if (empty($cursosEnProgreso)): ?>
                             <div class="text-center py-4">
                                 <p>No tienes cursos en progreso actualmente.</p>
-                                <a href="catalogo.php" class="btn btn-primary">Explorar cursos</a>
+                                <a href="./course.php" class="btn btn-primary">Explorar cursos</a>
                             </div>
                         <?php else: ?>
                             <?php foreach ($cursosEnProgreso as $curso): ?>
@@ -385,7 +385,7 @@ $userName = obtenerNombreUsuario($userId);
                                             <small>Última actividad: <?php echo $curso['ultima_actividad']; ?></small>
                                         </div>
                                     </div>
-                                        <a href="iniciar-curso.php?id=<?php echo htmlspecialchars($curso['id']); ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
+                                        <a href="/skillboots/templates/iniciar-curso.php?id=<?php echo htmlspecialchars($curso['id']); ?>" class="btn btn-sm btn-primary ml-3">Continuar</a>
                                     </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -511,7 +511,7 @@ $userName = obtenerNombreUsuario($userId);
                         <?php if (empty($datosEstudiante['cursos_recomendados'])): ?>
                             <div class="text-center py-3">
                                 <p>No hay recomendaciones disponibles.</p>
-                                <a href="catalogo.php" class="btn btn-sm btn-primary">Explorar catálogo</a>
+                                <a href="/skillboots/templates/course.php" class="btn btn-sm btn-primary">Explorar catálogo</a>
                             </div>
                         <?php else: ?>
                             <?php foreach ($datosEstudiante['cursos_recomendados'] as $curso): ?>

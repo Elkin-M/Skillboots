@@ -1,3 +1,34 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php
+require_once '../auth/auth.php';
+require_once '../conexion/db.php';
+
+// Optimizar las llamadas a `Auth::isAuthenticated()`
+$isLoggedIn = Auth::isAuthenticated();
+$userRole = $isLoggedIn ? Auth::getUserRole() : 'visitante';
+$userName = $isLoggedIn && isset($_SESSION['user_name']) ? $_SESSION['user_name'] : '';
+
+// Definir los datos de la página
+$pageData = [
+    'isLoggedIn' => $isLoggedIn,
+    'userRole' => $userRole,
+    'userName' => $userName
+];
+
+// Incluir la navbar según el rol del usuario
+if ($isLoggedIn && $userRole === 'estudiante') {
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
+} elseif ($pageData['userRole'] === 'profesor'){
+    include '../includes/navbar-pro.php';
+}else{
+    include '../includes/navbar.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +40,7 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -26,29 +57,6 @@
 </head>
 
 <body>
-<?php 
-session_start();
-require_once '../auth/auth.php';
-
-// Optimizar las llamadas a `Auth::isAuthenticated()`
-$isLoggedIn = Auth::isAuthenticated();
-$userRole = $isLoggedIn ? Auth::getUserRole() : 'visitante';
-$userName = $isLoggedIn && isset($_SESSION['user_name']) ? $_SESSION['user_name'] : '';
-
-// Definir los datos de la página
-$pageData = [
-    'isLoggedIn' => $isLoggedIn,
-    'userRole' => $userRole,
-    'userName' => $userName
-];
-
-// Incluir la navbar según el rol del usuario
-if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
-} else {
-    include '../includes/navbar.php'; // Navbar para visitantes
-}
-?>
     <!-- Header Start -->
     <div class="container-fluid page-header" style="margin-bottom: 90px;">
         <div class="container">

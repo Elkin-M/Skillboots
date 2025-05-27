@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once '../../conexion/config.php';
 
 // Autenticar usuario
 $headers = getallheaders();
@@ -13,7 +13,7 @@ if (!$usuario_id) {
 }
 
 try {
-    $sql = "SELECT cs.id, cs.titulo, cs.descripcion, cs.fecha, cs.hora_inicio, cs.hora_fin, cs.enlace_reunion
+    $sql = "SELECT cs.id, cs.title, cs.descripcion, cs.fecha, cs.hora_inicio, cs.hora_fin, cs.enlace_reunion
             FROM class_sessions cs
             JOIN cursos c ON cs.curso_id = c.id
             JOIN usuarios_cursos uc ON c.id = uc.curso_id

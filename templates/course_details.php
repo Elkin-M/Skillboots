@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'conexion/db.php'; // Asegúrate de usar la ruta correcta a tu archivo de conexión
+require_once '../conexion/db.php'; // Asegúrate de usar la ruta correcta a tu archivo de conexión
 
 
 
@@ -145,6 +145,8 @@ if (substr($base_path, -1) !== '/') {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($curso['nombre']); ?> - SkillBoots</title>
@@ -171,9 +173,9 @@ $pageData = [
 
 // Incluir la navbar según el rol del usuario
 if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor'){
-    include 'navbar-pro.php';
+    include '../includes/navbar-pro.php';
 }else{
     include '../includes/navbar.php';
 }
@@ -521,7 +523,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <?php endif; ?>
                             </div>
                             <div class="card-footer bg-white border-top-0">
-                                <a href="<?php echo $base_path; ?>curso.php?id=<?php echo $curso_rel['id']; ?>" class="btn btn-outline-primary btn-sm d-block">Ver curso</a>
+                                <a href="<?php echo $base_path; ?>iniciar-curso.php?id=<?php echo $curso_rel['id']; ?>" class="btn btn-outline-primary btn-sm d-block">Ver curso</a>
                             </div>
                         </div>
                     </div>

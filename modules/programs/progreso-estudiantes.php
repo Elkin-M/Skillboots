@@ -68,7 +68,7 @@ include 'Extrae.php'; // If this is the correct path?>
             button.addEventListener('click', function() {
                 const cursoId = parseInt(this.getAttribute('data-curso-id'));
                 // Redirigir a iniciar-curso.php con el ID del curso
-                window.location.href = `iniciar-curso.php?id=${cursoId}`;
+                window.location.href = `/skillboots/templates/iniciar-curso.php?id=${cursoId}`;
             });
         });
     }
@@ -121,7 +121,7 @@ include 'Extrae.php'; // If this is the correct path?>
         continueBtn.className = `btn ${curso.progreso === 100 ? 'btn-success' : 'btn-primary'}`;
         continueBtn.onclick = function() {
             const cursoId = curso.id;
-            window.location.href = `iniciar-curso.php?id=${cursoId}`;
+            window.location.href = `../../templates/iniciar-curso.php?id=${cursoId}`;
         };
         
         // Mostrar el modal

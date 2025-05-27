@@ -87,7 +87,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <?php if (empty($cursos)): ?>
     <div class="alert alert-info">
         <p class="mb-0">No estás inscrito en ningún curso todavía.</p>
-        <a href="catalogo.php" class="btn btn-primary mt-3">Explorar cursos disponibles</a>
+        <a href="../templates/course.php" class="btn btn-primary mt-3">Explorar cursos disponibles</a>
     </div>
     <?php else: ?>
     <div class="row">
@@ -133,7 +133,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                     </div>
                 </div>
                 <div class="card-footer bg-white">
-                    <a href="iniciar-curso.php?id=<?php echo $curso['id']; ?>" 
+                    <a href="../templates/iniciar-curso.php?id=<?php echo $curso['id']; ?>" 
                        class="btn btn-primary w-100">
                         Continuar curso
                     </a>

@@ -1,29 +1,101 @@
-/* Modificación del CSS existente */
+/* CSS optimizado para el dropdown de notificaciones */
 #notificationDropdown {
-    min-width: 300px;
-    /* Cambio de max-width a min-width */
-    max-width: 400px;
-    /* Establecer un límite máximo */
-    width: auto;
-    /* Permitir que el ancho se ajuste al contenido */
+    /* Ancho dinámico con límites */
+    min-width: 280px;
+    max-width: min(450px, 90vw); /* Se adapta al viewport en pantallas pequeñas */
+    width: max-content; /* Se ajusta al contenido */
+    
+    /* Manejo del overflow */
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 400px;
+    
+    /* Posicionamiento mejorado */
+    position: absolute !important;
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    
+    /* Mejoras visuales */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
 }
 
+/* Asegurar que el dropdown se posicione correctamente */
 .dropdown-menu {
     position: absolute;
-    left: auto !important;
-    /* Asegura que no se fuerza la posición izquierda */
     right: 0 !important;
-    /* Alinea a la derecha */
+    left: auto !important;
     transform: none !important;
-    /* Previene transformaciones que pueden afectar la posición */
+    margin-top: 2px; /* Pequeño espacio del botón */
 }
 
+/* Estilos para los elementos del dropdown */
 .dropdown-item {
-    white-space: normal;
+    /* Manejo del texto */
+    white-space: normal !important;
     word-wrap: break-word;
-    padding: 8px 15px;
-    /* Añade un poco más de padding para mejor lectura */
+    word-break: break-word;
+    hyphens: auto;
+    
+    /* Espaciado */
+    padding: 10px 15px;
+    line-height: 1.4;
+    
+    /* Prevenir que el texto se salga */
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+/* Estilos específicos para notificaciones largas */
+.dropdown-item.notification-item {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.notification-item:last-child {
+    border-bottom: none;
+}
+
+/* Para títulos de notificación */
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Para el contenido de notificación */
+.notification-content {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+/* Para la fecha/hora */
+.notification-time {
+    font-size: 0.8em;
+    color: #999;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    #notificationDropdown {
+        min-width: 250px;
+        max-width: calc(100vw - 20px);
+        left: 10px !important;
+        right: 10px !important;
+        transform: none !important;
+    }
+}
+
+/* Para el estado de carga */
+.dropdown-item.loading {
+    text-align: center;
+    color: #999;
+    font-style: italic;
 }

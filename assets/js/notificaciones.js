@@ -1,12 +1,19 @@
 function loadNotifications() {
-    fetch('/skillboots/1/notificaciones/get_notifications.php')
-        .then(response => response.json())
+    console.log("📥 Iniciando carga de notificaciones...");
+
+    fetch('/skillboots/notificaciones/get_notifications.php')
+        .then(response => {
+            console.log("✅ Respuesta recibida del servidor:", response);
+            return response.json();
+        })
         .then(data => {
+            console.log("📦 Datos de notificaciones recibidos:", data);
+
             const notificationContainer = document.getElementById('notificationDropdown');
             const notificationBadge = document.getElementById('notificationBadge');
 
             if (!notificationContainer || !notificationBadge) {
-                console.error("Elementos no encontrados en el DOM.");
+                console.error("❌ Elementos #notificationDropdown o #notificationBadge no encontrados en el DOM.");
                 return;
             }
 
@@ -14,16 +21,23 @@ function loadNotifications() {
             if (data.unread > 0) {
                 notificationBadge.textContent = data.unread;
                 notificationBadge.style.display = 'inline-block';
+                console.log(`🔔 ${data.unread} notificaciones no leídas.`);
             } else {
                 notificationBadge.style.display = 'none';
+                console.log("ℹ️ No hay notificaciones no leídas.");
             }
 
             // Limpiar contenedor
             notificationContainer.innerHTML = '';
+            console.log("🧹 Contenedor de notificaciones limpiado.");
 
             // Añadir notificaciones
             if (data.notifications.length > 0) {
+                console.log(`📨 Se encontraron ${data.notifications.length} notificaciones.`);
+
                 data.notifications.forEach(notification => {
+                    console.log("➡️ Procesando notificación:", notification);
+
                     const notificationItem = document.createElement('a');
                     notificationItem.href = notification.link || '#';
                     notificationItem.className = 'dropdown-item';
@@ -45,6 +59,7 @@ function loadNotifications() {
 
                     // Marcar como leída al hacer clic
                     notificationItem.addEventListener('click', () => {
+                        console.log(`🖱️ Clic en notificación ID: ${notification.id}`);
                         markAsRead(notification.id);
                     });
                 });
@@ -54,9 +69,9 @@ function loadNotifications() {
                 viewAllLink.className = 'dropdown-item text-center';
                 viewAllLink.innerHTML = '<a href="notifications.php" class="text-primary">Ver todas las notificaciones</a>';
                 notificationContainer.appendChild(viewAllLink);
-
+                console.log("🔗 Enlace 'Ver todas' agregado.");
             } else {
-                // No hay notificaciones
+                console.log("🛑 No hay notificaciones para mostrar.");
                 const emptyItem = document.createElement('div');
                 emptyItem.className = 'dropdown-item text-center';
                 emptyItem.textContent = 'No tienes notificaciones';
@@ -64,9 +79,10 @@ function loadNotifications() {
             }
         })
         .catch(error => {
-            console.error('Error al cargar notificaciones:', error);
+            console.error('🚨 Error al cargar notificaciones:', error);
         });
 }
+
 
 // Función para marcar notificación como leída
 function markAsRead(notificationId) {
@@ -75,7 +91,7 @@ function markAsRead(notificationId) {
         return;
     }
 
-    fetch('/skillboots/1/notificaciones/mark_notification_read.php', {
+    fetch('/skillboots/notificaciones/mark_notification_read.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

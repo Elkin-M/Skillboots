@@ -8,6 +8,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> 
@@ -111,7 +113,7 @@
                             </div>
                             <a href="/skillboots/templates/contact.php" class="nav-item nav-link">Contactanos</a>
                         </div>
-                        <a class="btn btn-primary py-2 px-4 ml-auto d-lg-block d-block mt-3 mt-lg-0" href="/skillboots/auth/sesion.html">Unirse Ahora</a>
+                        <a class="btn btn-primary py-2 px-4 ml-auto d-lg-block d-block mt-3 mt-lg-0" href="/skillboots/auth/sesion.php">Unirse Ahora</a>
                         </div>
                 </nav>
             </div>

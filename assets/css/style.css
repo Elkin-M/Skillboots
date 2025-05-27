@@ -684,7 +684,7 @@ pre code {
 }
 
 .row {
-  justify-content: center;
+  /* justify-content: center; */
   display: flex;
   flex-wrap: wrap;
   margin-right: -15px;

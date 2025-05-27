@@ -8,8 +8,7 @@
     <meta content="cursos online, educación en línea, skillboots, aprendizaje digital, desarrollo profesional" name="keywords">
     <meta content="SkillBoots es tu plataforma de aprendizaje en línea que te conecta con los mejores cursos y profesionales para impulsar tu carrera" name="description">
 
-    <!-- Favicon -->
-    <link href="/assets/img/favicon.ico" rel="icon">
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -94,7 +93,7 @@
         .stats-counter {
             font-size: 3rem;
             font-weight: 700;
-            color: var(--primary);
+            color: white;
         }
         
         .course-badge {
@@ -103,12 +102,63 @@
             top: 10px;
             z-index: 10;
         }
+        .stats-container {
+    padding: 3rem 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('../assets/img/stats-bg.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    color: white;
+    margin: 5rem 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item:last-child {
+    border-right: none;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-text {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .stat-item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem 1rem;
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+}
+
     </style>
 </head>
 
 <body>
 <?php 
-session_start();
 require_once '../auth/auth.php';
 
 // Optimizar las llamadas a `Auth::isAuthenticated()`
@@ -169,55 +219,43 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <!-- About End -->
 
     <!-- Counter Start -->
-    <div class="container-fluid py-5 bg-light">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">Nuestro Impacto</h5>
-                <h1>SkillBoots en Números</h1>
-            </div>
+    <div class="container-fluid stats-container">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="d-flex align-items-center bg-white p-4 mb-4" style="height: 150px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 80px; height: 80px; border-radius: 10px;">
-                            <i class="fa fa-graduation-cap text-white"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
                         </div>
-                        <div>
-                            <h4 class="stats-counter">120K+</h4>
-                            <h6 class="text-uppercase m-0">Estudiantes</h6>
-                        </div>
+                        <div class="stat-number" data-count="120000">0</div>
+                        <div class="stat-text">Estudiantes</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="d-flex align-items-center bg-white p-4 mb-4" style="height: 150px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 80px; height: 80px; border-radius: 10px;">
-                            <i class="fa fa-book text-white"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-book-open"></i>
                         </div>
-                        <div>
-                            <h4 class="stats-counter">450+</h4>
-                            <h6 class="text-uppercase m-0">Cursos</h6>
-                        </div>
+                        <div class="stat-number" data-count="450">0</div>
+                        <div class="stat-text">Cursos</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="d-flex align-items-center bg-white p-4 mb-4" style="height: 150px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 80px; height: 80px; border-radius: 10px;">
-                            <i class="fa fa-chalkboard-teacher text-white"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
                         </div>
-                        <div>
-                            <h4 class="stats-counter">500+</h4>
-                            <h6 class="text-uppercase m-0">Instructores</h6>
-                        </div>
+                        <div class="stat-number" data-count="600">0</div>
+                        <div class="stat-text">Instructores</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="d-flex align-items-center bg-white p-4 mb-4" style="height: 150px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 80px; height: 80px; border-radius: 10px;">
-                            <i class="fa fa-globe text-white"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-award"></i>
                         </div>
-                        <div>
-                            <h4 class="stats-counter">20+</h4>
-                            <h6 class="text-uppercase m-0">Países</h6>
-                        </div>
+                        <div class="stat-number" data-count="25">20</div>
+                        <div class="stat-text">Paises</div>
                     </div>
                 </div>
             </div>
@@ -529,6 +567,26 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 
     <!-- Template Javascript -->
     <script src="../assets/js/main.js"></script>
+    <script>
+        // Counter animation
+        $('.stat-number').each(function() {
+                var $this = $(this);
+                var countTo = $this.attr('data-count');
+                
+                $({ countNum: 0 }).animate({
+                    countNum: countTo
+                }, {
+                    duration: 2000,
+                    easing: 'linear',
+                    step: function() {
+                        $this.text(Math.floor(this.countNum));
+                    },
+                    complete: function() {
+                        $this.text(this.countNum);
+                    }
+                });
+            });
+    </script>
 </body>
 
 </html>

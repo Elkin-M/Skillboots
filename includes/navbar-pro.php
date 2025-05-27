@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth/sesion.html");
+    header("Location: ../auth/sesion.php");
     exit();
 }
 $nombre = $_SESSION['user_name'];
@@ -13,6 +13,8 @@ $rol = $_SESSION['user_rol'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Profesores</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> 
@@ -47,10 +49,10 @@ $rol = $_SESSION['user_rol'];
 
             <!-- Navigation Menu -->
             <div class="derecho">
-                <a href="dashboard-profesor.php" class="nav-item nav-link active">
+                <a href="/skillboots/templates/holaaaa.php" class="nav-item nav-link active">
                     <i class="fas fa-tachometer-alt"></i>Dashboard
                 </a>
-                <a href="crear_curso.php#crearCurso" class="nav-item nav-link">
+                <a href="/skillboots/courses/crear_curso.php#crearCurso" class="nav-item nav-link">
                     <i class="fas fa-book"></i>Mis Cursos
                 </a>
                 <a href="calificaciones.php" class="nav-item nav-link position-relative">
@@ -124,7 +126,7 @@ $rol = $_SESSION['user_rol'];
                             <i class="fas fa-question-circle"></i> Soporte
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="./conexion/logout.php" class="dropdown-item">
+                        <a href="/skillboots/auth/logout.php" class="dropdown-item">
                             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                         </a>
                     </div>
@@ -189,7 +191,7 @@ $rol = $_SESSION['user_rol'];
                             <a href="soporte.php" class="nav-item nav-link">
                                 <i class="fas fa-question-circle me-2"></i>Soporte
                             </a>
-                            <a href="./conexion/logout.php" class="nav-item nav-link">
+                            <a href="/skillboots/auth/logout.php" class="nav-item nav-link">
                                 <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                             </a>
                         </div>

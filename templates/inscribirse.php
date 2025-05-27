@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'conexion/db.php'; // Asegúrate de usar la ruta correcta a tu archivo de conexión
+require_once '../conexion/db.php'; // Asegúrate de usar la ruta correcta a tu archivo de conexión
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -20,7 +20,7 @@ $stmt->execute([
     ':user_id' => $user_id
 ]);
 if ($stmt->rowCount() > 0) {
-    header('Location: curso.php?id=' . $curso_id . '&message=Ya estás inscrito en este curso.');
+    header('Location: course.php?id=' . $curso_id . '&message=Ya estás inscrito en este curso.');
     exit;
 }
 // Si el formulario se envía, procesar la inscripción
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':curso_id' => $curso_id,
         ':user_id' => $user_id
     ]);
-    header('Location: curso.php?id=' . $curso_id . '&message=Inscripción exitosa.');
+    header('Location: ../courses/iniciar-curso.php?id=' . $curso_id . '&message=Inscripción exitosa.');
     exit;
 }
 // Obtener información del curso
@@ -194,6 +194,8 @@ if (!$curso) {
             }
         }
     </style>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
 </head>
 <body>
 <?php
@@ -210,9 +212,9 @@ $pageData = [
 ];
 // Incluir la navbar según el rol del usuario
 if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor'){
-    include 'navbar-pro.php';
+    include '../includes/navbar-pro.php';
 }else{
     include '../includes/navbar.php';
 }

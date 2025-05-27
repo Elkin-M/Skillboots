@@ -40,7 +40,7 @@ if (!$modo_automatico) {
         }
         
         // Marcar el curso como eliminado en lugar de eliminarlo directamente
-        $stmt = $conn->prepare("UPDATE cursos SET estate = 'eliminado', fecha_eliminacion = NOW() WHERE id = :curso_id");
+        $stmt = $conn->prepare("UPDATE cursos SET estado = 'eliminado', fecha_eliminacion = NOW() WHERE id = :curso_id");
         $stmt->bindParam(':curso_id', $curso_id, PDO::PARAM_INT);
         $stmt->execute();
         

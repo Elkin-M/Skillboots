@@ -7,6 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKILLBOOTS - Listado de Cursos</title>
@@ -34,9 +36,9 @@ $pageData = [
 
 // Incluir la navbar según el rol del usuario
 if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor'){
-    include 'navbar-pro.php';
+    include '../includes/navbar-pro.php';
 }else{
     include '../includes/navbar.php';
 }

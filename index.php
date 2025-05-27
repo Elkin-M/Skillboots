@@ -1,5 +1,14 @@
 <?php 
 session_start();
+// Capturar mensajes de error/éxito de la sesión
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+$error_type = isset($_SESSION['error_type']) ? $_SESSION['error_type'] : '';
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
+
+// Limpiar mensajes después de capturarlos para evitar que se muestren de nuevo
+if (isset($_SESSION['error_message'])) unset($_SESSION['error_message']);
+if (isset($_SESSION['error_type'])) unset($_SESSION['error_type']);
+if (isset($_SESSION['success_message'])) unset($_SESSION['success_message']);
 require_once './auth/auth.php';
 
 // Optimizar las llamadas a `Auth::isAuthenticated()`
@@ -37,9 +46,7 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'profesor') {
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    <link href="./assets/img/favicon.ico" rel="icon">
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -55,7 +62,43 @@ if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'profesor') {
     <link href="./assets/css/style.css" rel="stylesheet">
     <style>
    body {
-    zoom: 0.8;
+    zoom: 0.9;
+}
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.alert-custom {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    animation: slideInRight 0.5s ease-out;
+    padding: 15px;
+    font-size: 14px;
+    border: 1px solid;
 }
     </style>
 </head>
@@ -212,7 +255,7 @@ if (isset($pageData['isLoggedIn']) && $pageData['isLoggedIn']) {
         if ($pageData['userRole'] === 'estudiante') {
             include './modules/programs/progreso-estudiantes.php';
         } elseif ($pageData['userRole'] === 'profesor') {
-            include './components/dashboards/progreso-profesor.php';
+            include './modules/programs/progreso-profesor.php';
         }
     }
 }
@@ -763,8 +806,185 @@ if (isset($pageData['isLoggedIn']) && $pageData['isLoggedIn']) {
       }
       v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
   })(document, 'script');
+          // Función para mostrar alertas
+          function showAlert(message, type) {
+            // Crear el elemento de alerta
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+                min-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                border-radius: 8px;
+                animation: slideInRight 0.5s ease-out;
+            `;
+            
+            // Definir colores según el tipo
+            let bgColor, borderColor, textColor, iconClass;
+            switch(type) {
+                case 'error':
+                    bgColor = '#f8d7da';
+                    borderColor = '#f5c6cb';
+                    textColor = '#721c24';
+                    iconClass = 'bi-exclamation-triangle-fill';
+                    break;
+                case 'warning':
+                    bgColor = '#fff3cd';
+                    borderColor = '#ffecb5';
+                    textColor = '#856404';
+                    iconClass = 'bi-exclamation-triangle';
+                    break;
+                case 'success':
+                    bgColor = '#d1e7dd';
+                    borderColor = '#badbcc';
+                    textColor = '#0f5132';
+                    iconClass = 'bi-check-circle-fill';
+                    break;
+                default:
+                    bgColor = '#d1ecf1';
+                    borderColor = '#bee5eb';
+                    textColor = '#0c5460';
+                    iconClass = 'bi-info-circle';
+            }
+            
+            alertDiv.style.backgroundColor = bgColor;
+            alertDiv.style.borderColor = borderColor;
+            alertDiv.style.color = textColor;
+            alertDiv.style.border = `1px solid ${borderColor}`;
+            
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="bi ${iconClass}" style="font-size: 1.2em;"></i>
+                    <span style="flex: 1;">${message}</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: ${textColor}; opacity: 0.7;">&times;</button>
+                </div>
+            `;
+            
+            // Agregar estilos de animación
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+            if (!document.querySelector('#alert-styles')) {
+                style.id = 'alert-styles';
+                document.head.appendChild(style);
+            }
+            
+            // Agregar al DOM
+            document.body.appendChild(alertDiv);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.style.animation = 'slideOutRight 0.5s ease-in';
+                    setTimeout(() => {
+                        if (alertDiv.parentNode) {
+                            alertDiv.remove();
+                        }
+                    }, 500);
+                }
+            }, 5000);
+        }
 </script>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert-custom';
+        
+        let bgColor, borderColor, textColor, iconClass;
+        switch(type) {
+            case 'error':
+                bgColor = '#f8d7da';
+                borderColor = '#f5c6cb';
+                textColor = '#721c24';
+                iconClass = 'bi-exclamation-triangle-fill';
+                break;
+            case 'warning':
+                bgColor = '#fff3cd';
+                borderColor = '#ffecb5';
+                textColor = '#856404';
+                iconClass = 'bi-exclamation-triangle';
+                break;
+            case 'success':
+                bgColor = '#d1e7dd';
+                borderColor = '#badbcc';
+                textColor = '#0f5132';
+                iconClass = 'bi-check-circle-fill';
+                break;
+            default:
+                bgColor = '#d1ecf1';
+                borderColor = '#bee5eb';
+                textColor = '#0c5460';
+                iconClass = 'bi-info-circle';
+        }
+        
+        alertDiv.style.backgroundColor = bgColor;
+        alertDiv.style.borderColor = borderColor;
+        alertDiv.style.color = textColor;
+        alertDiv.style.border = `1px solid ${borderColor}`;
+        
+        alertDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="bi ${iconClass}" style="font-size: 1.2em;"></i>
+                <span style="flex: 1;">${message}</span>
+                <button type="button" onclick="this.parentElement.parentElement.remove()" 
+                        style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: ${textColor}; opacity: 0.7;">&times;</button>
+            </div>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.style.animation = 'slideOutRight 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 500);
+            }
+        }, 5000);
+    }
+
+    <?php if (!empty($error_message)): ?>
+        showAlert('<?php echo addslashes($error_message); ?>', '<?php echo $error_type; ?>');
+    <?php endif; ?>
+    
+    <?php if (!empty($success_message)): ?>
+        showAlert('<?php echo addslashes($success_message); ?>', 'success');
+    <?php endif; ?>
+});
+
+
+</script>
+
 </body>
 
 </html>

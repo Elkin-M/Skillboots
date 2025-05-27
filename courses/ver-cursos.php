@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 require_once '../auth/auth.php';
 require_once '../conexion/db.php';
-require_once './utils/security.php'; // New utility class for security functions
+require_once '../admin/security.php'; // New utility class for security functions
 
 // Verify authentication
 if (!Auth::isAuthenticated()) {
@@ -95,7 +95,7 @@ $pageData = [
 if ($pageData['isLoggedIn'] && $pageData['userRole'] === 'estudiante') {
     include 'navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor') {
-    include 'navbar-pro.php'; // Navbar para profesores
+    include '../includes/navbar-pro.php'; // Navbar para profesores
 } else {
     include '../includes/navbar.php'; // Navbar general
 }

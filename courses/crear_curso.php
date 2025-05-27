@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../auth/auth.php';
-require_once 'conexion/db.php'; // Asegúrate de que este archivo se encargue de la conexión PDO
+require_once '../conexion/db.php'; // Asegúrate de que este archivo se encargue de la conexión PDO
 
 // Optimizar las llamadas a `Auth::isAuthenticated()`
 $isLoggedIn = Auth::isAuthenticated();
@@ -17,9 +17,9 @@ $pageData = [
 
 // Incluir la navbar según el rol del usuario
 if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor'){
-    include 'navbar-pro.php';
+    include '../includes/navbar-pro.php';
 } else {
     include '../includes/navbar.php';
 }
@@ -81,7 +81,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 
                 <!-- Course Card -->
                 <?php
-                include './conexion/db.php';  // Este archivo se encarga de la conexión PDO
+                include '../conexion/db.php';  // Este archivo se encarga de la conexión PDO
 
                 try {
                     // Asegúrate de que la sesión esté iniciada
@@ -147,7 +147,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                                 <a href="editar-curso.php?id=<?= $curso['id'] ?>" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-edit me-1"></i> Editar
                                                 </a>
-                                                <a href="ver-cursos.php?id=<?= $curso['id'] ?>" style="background-color: var(--success);" class="btn btn-sm btn-outline-secondary">
+                                                <a href="view_courses.php?id=<?= $curso['id'] ?>" style="background-color: var(--success);" class="btn btn-sm btn-outline-secondary">
                                                     <i class="fas fa-eye me-1"></i> Ver
                                                 </a>
                                             </div>
@@ -1357,7 +1357,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 
-require_once 'conexion/db.php'; // Asegúrate de que este archivo se encargue de la conexión PDO
+require_once '../conexion/db.php'; // Asegúrate de que este archivo se encargue de la conexión PDO
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {

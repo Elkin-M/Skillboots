@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'conexion/db.php';
+require_once '../conexion/db.php';
 
 // Agregar protección CSRF
 if (!isset($_SESSION['csrf_token'])) {
@@ -38,7 +38,7 @@ try {
     if ($stmt->rowCount() === 0) {
         // Si no está inscrito, redirigir a la página del curso
         $_SESSION['info_message'] = "Debes inscribirte en este curso primero";
-        header('Location: curso.php?id=' . $curso_id);
+        header('Location: ../courses/ver-curso.php?id=' . $curso_id);
         exit;
     }
 
@@ -375,6 +375,8 @@ $base_path = rtrim($base_path, '/') . '/';
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
@@ -408,9 +410,9 @@ $pageData = [
 
 // Incluir la navbar según el rol del usuario
 if ($isLoggedIn && $userRole === 'estudiante') {
-    include 'navbar-estu.php'; // Navbar para estudiantes
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
 } elseif ($pageData['userRole'] === 'profesor'){
-    include 'navbar-pro.php';
+    include '../includes/navbar-pro.php';
 } else {
     include '../includes/navbar.php';
 }
@@ -474,7 +476,7 @@ if (isset($_SESSION['success_message'])) {
                                 <!-- Contenido modular -->
                                 <?php foreach ($modulo['contenido_modular'] as $contenido): ?>
                                 <li class="list-group-item">
-                                    <a href="contenido.php?id=<?php echo $contenido['id']; ?>" class="contenido-link d-flex align-items-center
+                                    <a href="../courses/contenido.php?id=<?php echo $contenido['id']; ?>" class="contenido-link d-flex align-items-center
                                         <?php echo $contenido['visto'] ? 'visto' : ''; ?>
                                         <?php echo $contenido['id'] == $proximo_contenido_id ? 'active' : ''; ?>">
                                         <?php
@@ -495,7 +497,7 @@ if (isset($_SESSION['success_message'])) {
                                 <!-- Recursos -->
                                 <?php foreach ($modulo['recursos'] as $recurso): ?>
                                 <li class="list-group-item">
-                                    <a href="actividad.php?id=<?php echo $recurso['id']; ?>" class="recurso-link d-flex align-items-center"
+                                    <a href="../modules/users/actividad.php?id=<?php echo $recurso['id']; ?>" class="recurso-link d-flex align-items-center"
                                        target="_blank" rel="noopener">
                                         <i class="fas fa-file-download me-2"></i>
                                         <span><?php echo htmlspecialchars($recurso['titulo']); ?></span>
@@ -509,7 +511,7 @@ if (isset($_SESSION['success_message'])) {
                                 <!-- Actividades -->
                                 <?php foreach ($modulo['actividades'] as $actividad): ?>
                                 <li class="list-group-item">
-                                    <a href="actividad.php?id=<?php echo $actividad['id']; ?>" class="actividad-link d-flex align-items-center
+                                    <a href="../modules/users/actividad.php?id=<?php echo $actividad['id']; ?>" class="actividad-link d-flex align-items-center
                                         <?php echo $actividad['completada'] ? 'completada' : ''; ?>">
                                         <?php
                                         $icono = 'fa-tasks';
@@ -547,7 +549,7 @@ if (isset($_SESSION['success_message'])) {
             </div>
             <?php if ($proximo_contenido_id): ?>
                 <!-- iframe para cargar el contenido -->
-                <iframe id="contenido-frame" src="contenido.php?id=<?php echo $proximo_contenido_id; ?>&embedded=1"
+                <iframe id="contenido-frame" src="../courses/contenido.php?id=<?php echo $proximo_contenido_id; ?>&embedded=1"
                         frameborder="0" title="Contenido del curso"></iframe>
             <?php else: ?>
                 <div class="p-5 text-center empty-state">
@@ -682,7 +684,7 @@ if (isset($_SESSION['success_message'])) {
 
 <!-- JavaScript necesario -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./js/calendario.js"></script>
+<script src="/skillboots/assets/js/calendario.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Module globals
