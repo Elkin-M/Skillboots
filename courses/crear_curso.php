@@ -144,7 +144,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                                 <small class="text-muted">Estudiantes: <?= $curso['total_estudiantes'] ?></small>
                                             </div>
                                             <div class="d-flex justify-content-between mt-2">
-                                                <a href="editar-curso.php?id=<?= $curso['id'] ?>" class="btn btn-sm btn-primary">
+                                                <a href="edit_course.php?id=<?= $curso['id'] ?>" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-edit me-1"></i> Editar
                                                 </a>
                                                 <a href="view_courses.php?id=<?= $curso['id'] ?>" style="background-color: var(--success);" class="btn btn-sm btn-outline-secondary">

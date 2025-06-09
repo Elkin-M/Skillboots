@@ -3,7 +3,7 @@ session_start();
 require_once '../conexion/db.php'; // Asegúrate de usar la ruta correcta a tu archivo de conexión
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: /skillboots/auth/sesion.php');
     exit;
 }
 $user_id = $_SESSION['user_id'];

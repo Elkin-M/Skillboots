@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
-    <title>SKILLBOOTS - Online Courses HTML Template</title>
+    <title>SKILLBOOTS - Plantilla HTML de Cursos en Línea</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta content="Plantillas HTML Gratuitas" name="keywords">
+    <meta content="Plantillas HTML Gratuitas" name="description">
 
     <!-- Favicon -->
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
@@ -54,11 +54,11 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid page-header" style="margin-bottom: 90px;">
         <div class="container">
             <div class="d-flex flex-column justify-content-center" style="min-height: 300px">
-                <h3 class="display-4 text-white text-uppercase">Single</h3>
+                <h3 class="display-4 text-white text-uppercase">Artículo</h3>
                 <div class="d-inline-flex text-white">
-                    <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                    <p class="m-0 text-uppercase"><a class="text-white" href="">Inicio</a></p>
                     <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                    <p class="m-0 text-uppercase">Single</p>
+                    <p class="m-0 text-uppercase">Artículo</p>
                 </div>
             </div>
         </div>
@@ -72,73 +72,43 @@ if ($isLoggedIn && $userRole === 'estudiante') {
             <div class="row">
                 <div class="col-lg-8">
                     <div class="mb-5">
-                        <h6 class="text-primary mb-3">Jan 01, 2050</h6>
-                        <h1 class="mb-5">Vero ipsum sea justo dolore eirmod amet dolor tempor lorem</h1>
+                        <h6 class="text-primary mb-3">01 Ene, 2050</h6>
+                        <h1 class="mb-5">Aprende desarrollo web moderno con las mejores prácticas y tecnologías actuales</h1>
                         <img class="img-fluid rounded w-100 mb-4" src="../assets/img/carousel-1.jpg" alt="Image">
-                        <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem.
-                            Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet amet magna accusam
-                            consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et. Ipsum sit
-                            gubergren dolores et, consetetur justo invidunt at et aliquyam ut et vero clita. Diam sea
-                            sea no sed dolores diam nonumy, gubergren sit stet no diam kasd vero.</p>
-                        <p>Voluptua est takimata stet invidunt sed rebum nonumy stet, clita aliquyam dolores vero stet
-                            consetetur elitr takimata rebum sanctus. Sit sed accusam stet sit nonumy kasd diam dolores,
-                            sanctus lorem kasd duo dolor dolor vero sit et. Labore ipsum duo sanctus amet eos et.
-                            Consetetur no sed et aliquyam ipsum justo et, clita lorem sit vero amet amet est dolor
-                            elitr, stet et no diam sit. Dolor erat justo dolore sit invidunt.</p>
-                        <h2 class="mb-4">Est dolor lorem et ea</h2>
+                        <p>El desarrollo web moderno requiere un enfoque integral que combine tanto habilidades técnicas como conocimiento de las últimas tendencias. En esta guía completa exploraremos las herramientas esenciales, frameworks populares y metodologías que todo desarrollador web debe dominar para crear aplicaciones exitosas y eficientes.</p>
+                        <p>Desde HTML5 y CSS3 hasta JavaScript avanzado y frameworks como React, Vue.js y Angular, cubriremos todos los aspectos fundamentales. También abordaremos temas cruciales como la optimización de rendimiento, accesibilidad web, diseño responsivo y las mejores prácticas de SEO para garantizar que tus proyectos destaquen en el competitivo mundo digital actual.</p>
+                        <h2 class="mb-4">Tecnologías fundamentales para dominar</h2>
                         <img class="img-fluid rounded w-50 float-left mr-4 mb-3" src="../assets/img/blog-1.jpg" alt="Image">
-                        <p>Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor invidunt at
-                            est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam lorem sed. Magna amet
-                            sed rebum eos. Clita no magna no dolor erat diam tempor rebum consetetur, sanctus labore sed
-                            nonumy diam lorem amet eirmod. No at tempor sea diam kasd, takimata ea nonumy elitr
-                            sadipscing gubergren erat. Gubergren at lorem invidunt sadipscing rebum sit amet ut ut,
-                            voluptua diam dolores at sadipscing stet. Clita dolor amet dolor ipsum vero ea ea eos.
-                            Invidunt sed diam dolores takimata dolor dolore dolore sit. Sit ipsum erat amet lorem et,
-                            magna sea at sed et eos. Accusam eirmod kasd lorem clita sanctus ut consetetur et. Et duo
-                            tempor sea kasd clita ipsum et. Takimata kasd diam justo est eos erat aliquyam et ut. Ea sed
-                            sadipscing no justo et eos labore, gubergren ipsum magna dolor lorem dolore, elitr aliquyam
-                            takimata sea kasd dolores diam, amet et est accusam labore eirmod vero et voluptua. Amet
-                            labore clita duo et no. Rebum voluptua magna eos magna, justo gubergren labore sit.</p>
-                        <p>Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor invidunt at
-                            est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam lorem sed. Magna amet
-                            sed rebum eos. Clita no magna no dolor erat diam tempor rebum consetetur, sanctus labore sed
-                            nonumy diam lorem amet eirmod. No at tempor sea diam kasd, takimata ea nonumy elitr
-                            sadipscing gubergren erat.</p>
+                        <p>Para convertirse en un desarrollador web competente es esencial dominar las tecnologías base como HTML, CSS y JavaScript. Estas son las piedras angulares sobre las cuales se construyen todas las aplicaciones web modernas. HTML proporciona la estructura semántica, CSS se encarga del diseño visual y la presentación, mientras que JavaScript añade interactividad y funcionalidad dinámica. Además de estos fundamentos, es crucial familiarizarse con herramientas de desarrollo como Git para control de versiones, editores de código avanzados como VS Code, y entender conceptos de diseño responsivo para crear experiencias optimizadas en todos los dispositivos. El ecosistema web actual también demanda conocimiento en APIs REST, bases de datos, y principios de seguridad web para desarrollar aplicaciones robustas y escalables que satisfagan las necesidades del mercado tecnológico contemporáneo.</p>
+                        <p>El panorama del desarrollo web evoluciona constantemente, por lo que mantenerse actualizado con las últimas tendencias y herramientas es fundamental para el éxito profesional. Los frameworks modernos como React, Vue.js y Angular han revolucionado la forma en que construimos interfaces de usuario, ofreciendo componentes reutilizables y arquitecturas escalables que facilitan el mantenimiento del código a largo plazo.</p>
                     </div>
 
                     <!-- Comment List -->
                     <div class="mb-5">
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">3 Comments</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">3 Comentarios</h3>
                         <div class="media mb-4">
                             <img src="../assets/img/user.jpg" alt="Image" class="img-fluid rounded-circle mr-3 mt-1"
                                 style="width: 45px;">
                             <div class="media-body">
-                                <h6>John Doe <small><i>01 Jan 2045 at 12:00pm</i></small></h6>
-                                <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at.
-                                    Kasd diam tempor rebum magna dolores sed sed eirmod ipsum. Gubergren clita aliquyam
-                                    consetetur sadipscing, at tempor amet ipsum diam tempor consetetur at sit.</p>
-                                <button class="btn btn-sm btn-secondary">Reply</button>
+                                <h6>Juan Pérez <small><i>01 Ene 2045 a las 12:00pm</i></small></h6>
+                                <p>Excelente artículo sobre desarrollo web. Me ha resultado muy útil especialmente la sección sobre frameworks modernos. Las explicaciones son claras y los ejemplos prácticos realmente ayudan a entender los conceptos. Definitivamente pondré en práctica estas recomendaciones en mis próximos proyectos.</p>
+                                <button class="btn btn-sm btn-secondary">Responder</button>
                             </div>
                         </div>
                         <div class="media mb-4">
                             <img src="../assets/img/user.jpg" alt="Image" class="img-fluid rounded-circle mr-3 mt-1"
                                 style="width: 45px;">
                             <div class="media-body">
-                                <h6>John Doe <small><i>01 Jan 2045 at 12:00pm</i></small></h6>
-                                <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at.
-                                    Kasd diam tempor rebum magna dolores sed sed eirmod ipsum. Gubergren clita aliquyam
-                                    consetetur sadipscing, at tempor amet ipsum diam tempor consetetur at sit.</p>
-                                <button class="btn btn-sm btn-secondary">Reply</button>
+                                <h6>María García <small><i>01 Ene 2045 a las 12:00pm</i></small></h6>
+                                <p>Como desarrolladora junior, este contenido me ha proporcionado una perspectiva muy valiosa sobre las tecnologías que debo priorizar en mi aprendizaje. La información sobre las mejores prácticas es especialmente útil para alguien que está empezando en este campo.</p>
+                                <button class="btn btn-sm btn-secondary">Responder</button>
                                 <div class="media mt-4">
                                     <img src="../assets/img/user.jpg" alt="Image" class="img-fluid rounded-circle mr-3 mt-1"
                                         style="width: 45px;">
                                     <div class="media-body">
-                                        <h6>John Doe <small><i>01 Jan 2045 at 12:00pm</i></small></h6>
-                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum
-                                            et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.
-                                            Gubergren clita aliquyam consetetur, at tempor amet ipsum diam tempor at
-                                            sit.</p>
-                                        <button class="btn btn-sm btn-secondary">Reply</button>
+                                        <h6>Carlos López <small><i>01 Ene 2045 a las 12:00pm</i></small></h6>
+                                        <p>Totalmente de acuerdo María. Yo también estoy empezando y estos recursos han sido fundamentales para estructurar mi ruta de aprendizaje. Especialmente útiles son los consejos sobre herramientas de desarrollo y control de versiones con Git.</p>
+                                        <button class="btn btn-sm btn-secondary">Responder</button>
                                     </div>
                                 </div>
                             </div>
@@ -147,10 +117,10 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 
                     <!-- Comment Form -->
                     <div class="bg-secondary rounded p-5">
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Leave a comment</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Deja un comentario</h3>
                         <form>
                             <div class="form-group">
-                                <label for="name">Name *</label>
+                                <label for="name">Nombre *</label>
                                 <input type="text" class="form-control border-0" id="name">
                             </div>
                             <div class="form-group">
@@ -158,16 +128,16 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <input type="email" class="form-control border-0" id="email">
                             </div>
                             <div class="form-group">
-                                <label for="website">Website</label>
+                                <label for="website">Sitio Web</label>
                                 <input type="url" class="form-control border-0" id="website">
                             </div>
 
                             <div class="form-group">
-                                <label for="message">Message *</label>
+                                <label for="message">Mensaje *</label>
                                 <textarea id="message" cols="30" rows="5" class="form-control border-0"></textarea>
                             </div>
                             <div class="form-group mb-0">
-                                <input type="submit" value="Leave Comment" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">
+                                <input type="submit" value="Enviar Comentario" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">
                             </div>
                         </form>
                     </div>
@@ -177,17 +147,16 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                     <!-- Author Bio -->
                     <div class="d-flex flex-column text-center bg-dark rounded mb-5 py-5 px-4">
                         <img src="../assets/img/user.jpg" class="img-fluid rounded-circle mx-auto mb-3" style="width: 100px;">
-                        <h3 class="text-primary mb-3">John Doe</h3>
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Tag Cloud</h3>
-                        <p class="text-white m-0">Conset elitr erat vero dolor ipsum et diam, eos dolor lorem, ipsum sit
-                            no ut est ipsum erat kasd amet elitr</p>
+                        <h3 class="text-primary mb-3">Ana Rodríguez</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Sobre la Autora</h3>
+                        <p class="text-white m-0">Desarrolladora Full Stack con más de 8 años de experiencia en tecnologías web modernas, especializada en React, Node.js y arquitectura de aplicaciones escalables.</p>
                     </div>
 
                     <!-- Search Form -->
                     <div class="mb-5">
                         <form action="">
                             <div class="input-group">
-                                <input type="text" class="form-control form-control-lg" placeholder="Keyword">
+                                <input type="text" class="form-control form-control-lg" placeholder="Buscar...">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-transparent text-primary"><i
                                             class="fa fa-search"></i></span>
@@ -198,22 +167,22 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 
                     <!-- Category List -->
                     <div class="mb-5">
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Categories</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Categorías</h3>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Web Design</a>
+                                <a href="" class="text-decoration-none h6 m-0">Diseño Web</a>
                                 <span class="badge badge-primary badge-pill">150</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Web Development</a>
+                                <a href="" class="text-decoration-none h6 m-0">Desarrollo Web</a>
                                 <span class="badge badge-primary badge-pill">131</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Online Marketing</a>
+                                <a href="" class="text-decoration-none h6 m-0">Marketing Digital</a>
                                 <span class="badge badge-primary badge-pill">78</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Keyword Research</a>
+                                <a href="" class="text-decoration-none h6 m-0">Investigación de Palabras Clave</a>
                                 <span class="badge badge-primary badge-pill">56</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
@@ -225,40 +194,40 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 
                     <!-- Recent Post -->
                     <div class="mb-5">
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Recent Post</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Artículos Recientes</h3>
                         <a class="d-flex align-items-center text-decoration-none mb-3" href="">
                             <img class="img-fluid rounded" src="../assets/img/blog-80x80.jpg" alt="">
                             <div class="pl-3">
-                                <h6 class="m-1">Diam lorem dolore justo eirmod lorem dolore</h6>
-                                <small>Jan 01, 2050</small>
+                                <h6 class="m-1">Guía completa de JavaScript moderno para principiantes</h6>
+                                <small>01 Ene, 2050</small>
                             </div>
                         </a>
                         <a class="d-flex align-items-center text-decoration-none mb-3" href="">
                             <img class="img-fluid rounded" src="../assets/img/blog-80x80.jpg" alt="">
                             <div class="pl-3">
-                                <h6 class="m-1">Diam lorem dolore justo eirmod lorem dolore</h6>
-                                <small>Jan 01, 2050</small>
+                                <h6 class="m-1">Cómo optimizar el rendimiento de tu sitio web</h6>
+                                <small>01 Ene, 2050</small>
                             </div>
                         </a>
                         <a class="d-flex align-items-center text-decoration-none mb-3" href="">
                             <img class="img-fluid rounded" src="../assets/img/blog-80x80.jpg" alt="">
                             <div class="pl-3">
-                                <h6 class="m-1">Diam lorem dolore justo eirmod lorem dolore</h6>
-                                <small>Jan 01, 2050</small>
+                                <h6 class="m-1">Tendencias en diseño web para el próximo año</h6>
+                                <small>01 Ene, 2050</small>
                             </div>
                         </a>
                     </div>
 
                     <!-- Tag Cloud -->
                     <div class="mb-5">
-                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Tag Cloud</h3>
+                        <h3 class="text-uppercase mb-4" style="letter-spacing: 5px;">Etiquetas Populares</h3>
                         <div class="d-flex flex-wrap m-n1">
-                            <a href="" class="btn btn-outline-primary m-1">Design</a>
-                            <a href="" class="btn btn-outline-primary m-1">Development</a>
+                            <a href="" class="btn btn-outline-primary m-1">Diseño</a>
+                            <a href="" class="btn btn-outline-primary m-1">Desarrollo</a>
                             <a href="" class="btn btn-outline-primary m-1">Marketing</a>
                             <a href="" class="btn btn-outline-primary m-1">SEO</a>
-                            <a href="" class="btn btn-outline-primary m-1">Writing</a>
-                            <a href="" class="btn btn-outline-primary m-1">Consulting</a>
+                            <a href="" class="btn btn-outline-primary m-1">Contenido</a>
+                            <a href="" class="btn btn-outline-primary m-1">Consultoría</a>
                         </div>
                     </div>
                 </div>
@@ -274,10 +243,10 @@ if ($isLoggedIn && $userRole === 'estudiante') {
             <div class="col-lg-7 col-md-12">
                 <div class="row">
                     <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                        <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Contáctanos</h5>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>Calle 123, Bogotá, Colombia</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>+57 1 234 5678</p>
+                        <p><i class="fa fa-envelope mr-2"></i>info@skillboots.com</p>
                         <div class="d-flex justify-content-start mt-4">
                             <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
                             <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -286,25 +255,25 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                         </div>
                     </div>
                     <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Nuestros Cursos</h5>
                         <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Diseño Web</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Desarrollo de Apps</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing Digital</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Investigación</a>
                             <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-5 col-md-12 mb-5">
-                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
-                <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
+                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Boletín Informativo</h5>
+                <p>Mantente actualizado con las últimas tendencias en desarrollo web, tips de programación y recursos educativos. Suscríbete a nuestro boletín semanal y recibe contenido exclusivo directamente en tu bandeja de entrada.</p>
                 <div class="w-100">
                     <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Tu dirección de email">
                         <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
+                            <button class="btn btn-primary px-4">Suscribirse</button>
                         </div>
                     </div>
                 </div>
@@ -314,22 +283,22 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
         <div class="row">
             <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">&copy; <a href="#">Domain Name</a>. All Rights Reserved. Designed by <a href="https://htmlcodex.com">HTML Codex</a>
+                <p class="m-0 text-white">&copy; <a href="#">SKILLBOOTS</a>. Todos los Derechos Reservados. Diseñado por <a href="https://htmlcodex.com">HTML Codex</a>
                 </p>
             </div>
             <div class="col-lg-6 text-center text-md-right">
                 <ul class="nav d-inline-flex">
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Privacy</a>
+                        <a class="nav-link text-white py-0" href="#">Privacidad</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Terms</a>
+                        <a class="nav-link text-white py-0" href="#">Términos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                        <a class="nav-link text-white py-0" href="#">FAQ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Help</a>
+                        <a class="nav-link text-white py-0" href="#">Ayuda</a>
                     </li>
                 </ul>
             </div>

@@ -20,21 +20,14 @@ $pageData = [
     'userName' => $userName
 ];
 
-// Incluir la navbar según el rol del usuario
-if ($isLoggedIn && $userRole === 'estudiante') {
-    include '../includes/navbar-estu.php'; // Navbar para estudiantes
-} elseif ($pageData['userRole'] === 'profesor'){
-    include '../includes/navbar-pro.php';
-}else{
-    include '../includes/navbar.php';
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>SKILLBOOTS - Meet Our Expert Instructors</title>
+    <title>SKILLBOOTS - Instructores</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Online Courses, E-learning, Education" name="keywords">
     <meta content="Discover SKILLBOOTS' world-class instructors who will guide you on your learning journey" name="description">
@@ -72,10 +65,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
         
         .page-header {
             position: relative;
-            /* background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/img/header-bg.jpg'); */
             background-position: center;
             background-size: cover;
-            background-attachment: fixed;
         }
         
         .page-header::before {
@@ -572,21 +563,28 @@ if ($isLoggedIn && $userRole === 'estudiante') {
         }
     </style>
 </head>
-
+<?php // Incluir la navbar según el rol del usuario
+if ($isLoggedIn && $userRole === 'estudiante') {
+    include '../includes/navbar-estu.php'; // Navbar para estudiantes
+} elseif ($pageData['userRole'] === 'profesor'){
+    include '../includes/navbar-pro.php';
+}else{
+    include '../includes/navbar.php';
+} ?>
 <body>
     <!-- Header Start -->
     <div class="container-fluid page-header" style="margin-bottom: 90px;">
-        <div class="container">
+        <div class="container" style="padding-bottom: 30px;">
             <div class="d-flex flex-column justify-content-center animate__animated animate__fadeIn" style="min-height: 300px">
-                <h1 class="display-3 text-white text-uppercase">Our Expert Instructors</h1>
+                <h1 class="display-3 text-white text-uppercase">Nuestros Instructores Expertos</h1>
                 <div class="d-inline-flex text-white my-3">
-                    <p class="m-0 text-uppercase"><a class="text-white" href="../index.php">Home</a></p>
+                    <p class="m-0 text-uppercase"><a class="text-white" href="../index.php">Inicio</a></p>
                     <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                    <p class="m-0 text-uppercase">Instructors</p>
+                    <p class="m-0 text-uppercase">Instructores</p>
                 </div>
-                <p class="text-white lead mb-4">Learn from industry professionals and expert educators</p>
+                <p class="text-white lead mb-4">Aprende de profesionales de la industria y educadores especializados</p>
                 <a href="#instructors" class="btn btn-primary py-2 px-4 mt-3 animate__animated animate__fadeInUp animate__delay-1s">
-                    <i class="fa fa-users mr-2"></i>Meet Our Team
+                    <i class="fa fa-users mr-2"></i>Conoce Nuestro Equipo
                 </a>
             </div>
         </div>
@@ -598,17 +596,17 @@ if ($isLoggedIn && $userRole === 'estudiante') {
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="search-box">
-                    <input type="text" id="instructor-search" placeholder="Search instructors...">
+                    <input type="text" id="instructor-search" placeholder="Buscar instructores...">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="category-filter">
-                    <button class="active" data-filter="all">All</button>
-                    <button data-filter="web-design">Web Design</button>
-                    <button data-filter="programming">Programming</button>
+                    <button class="active" data-filter="all">Todos</button>
+                    <button data-filter="web-design">Diseño Web</button>
+                    <button data-filter="programming">Programación</button>
                     <button data-filter="marketing">Marketing</button>
-                    <button data-filter="data-science">Data Science</button>
+                    <button data-filter="data-science">Ciencia de Datos</button>
                 </div>
             </div>
         </div>
@@ -619,16 +617,16 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid py-5" id="instructors">
         <div class="container pt-5 pb-3">
             <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <h5 class="section-title px-3">Our Instructors</h5>
-                <h1 class="mb-3">Meet The Professionals Who Will Guide You</h1>
-                <p class="text-muted">Our instructors are industry professionals with years of experience in their fields. They are passionate about teaching and dedicated to your success.</p>
+                <h5 class="section-title px-3">Nuestros Instructores</h5>
+                <h1 class="mb-3">Conoce a Los Profesionales Que Te Guiarán</h1>
+                <p class="text-muted">Nuestros instructores son profesionales de la industria con años de experiencia en sus campos. Son apasionados por la enseñanza y están dedicados a tu éxito académico y profesional.</p>
             </div>
 
             <div class="row">
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="web-design">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-1.jpg" alt="John Davis">
+                            <img class="img-fluid" src="../assets/img/team-1.jpg" alt="Juan Martínez">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -636,7 +634,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">John Davis</h5>
+                            <h5 class="text-dark mb-0">Juan Martínez</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -645,15 +643,15 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star-half-alt"></i>
                                 <span class="ml-1">(124)</span>
                             </div>
-                            <p class="text-muted mb-2">Web Design Lead</p>
-                            <div class="team-specialty">UX/UI Design</div>
+                            <p class="text-muted mb-2">Líder de Diseño Web</p>
+                            <div class="team-specialty">Diseño UX/UI</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="programming" data-wow-delay="0.2s">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-2.jpg" alt="Sarah Johnson">
+                            <img class="img-fluid" src="../assets/img/team-2.jpg" alt="Ana García">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -661,7 +659,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">Sarah Johnson</h5>
+                            <h5 class="text-dark mb-0">Ana García</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -670,15 +668,15 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star"></i>
                                 <span class="ml-1">(186)</span>
                             </div>
-                            <p class="text-muted mb-2">Full Stack Developer</p>
-                            <div class="team-specialty">React & Node.js</div>
+                            <p class="text-muted mb-2">Desarrolladora Full Stack</p>
+                            <div class="team-specialty">React y Node.js</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="marketing" data-wow-delay="0.3s">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-3.jpg" alt="Michael Brown">
+                            <img class="img-fluid" src="../assets/img/team-3.jpg" alt="Carlos Rodríguez">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -686,7 +684,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">Michael Brown</h5>
+                            <h5 class="text-dark mb-0">Carlos Rodríguez</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -695,15 +693,15 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="far fa-star"></i>
                                 <span class="ml-1">(97)</span>
                             </div>
-                            <p class="text-muted mb-2">Digital Marketing Expert</p>
-                            <div class="team-specialty">SEO & PPC</div>
+                            <p class="text-muted mb-2">Experto en Marketing Digital</p>
+                            <div class="team-specialty">SEO y PPC</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="data-science" data-wow-delay="0.4s">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-4.jpg" alt="Emily Wilson">
+                            <img class="img-fluid" src="../assets/img/team-4.jpg" alt="María López">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -711,7 +709,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">Emily Wilson</h5>
+                            <h5 class="text-dark mb-0">María López</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -720,15 +718,15 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star-half-alt"></i>
                                 <span class="ml-1">(142)</span>
                             </div>
-                            <p class="text-muted mb-2">Data Scientist</p>
-                            <div class="team-specialty">Python & Machine Learning</div>
+                            <p class="text-muted mb-2">Científica de Datos</p>
+                            <div class="team-specialty">Python y Machine Learning</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="web-design" data-wow-delay="0.5s">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-1.jpg" alt="Robert Chen">
+                            <img class="img-fluid" src="../assets/img/team-1.jpg" alt="Roberto Chen">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -736,7 +734,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">Robert Chen</h5>
+                            <h5 class="text-dark mb-0">Roberto Chen</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -745,7 +743,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="far fa-star"></i>
                                 <span class="ml-1">(78)</span>
                             </div>
-                            <p class="text-muted mb-2">UI/UX Designer</p>
+                            <p class="text-muted mb-2">Diseñador UI/UX</p>
                             <div class="team-specialty">Adobe Creative Suite</div>
                         </div>
                     </div>
@@ -753,7 +751,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                 <div class="col-md-6 col-lg-3 fadeInUp team mb-4" data-category="programming" data-wow-delay="0.6s">
                     <div class="team-item rounded overflow-hidden mb-2">
                         <div class="team-img position-relative">
-                            <img class="img-fluid" src="../assets/img/team-2.jpg" alt="Jennifer Lopez">
+                            <img class="img-fluid" src="../assets/img/team-2.jpg" alt="Jennifer Morales">
                             <div class="team-social">
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -761,7 +759,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             </div>
                         </div>
                         <div class="team-text bg-white p-4">
-                            <h5 class="text-dark mb-0">Jennifer Lopez</h5>
+                            <h5 class="text-dark mb-0">Jennifer Morales</h5>
                             <div class="team-review">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -770,8 +768,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star"></i>
                                 <span class="ml-1">(201)</span>
                             </div>
-                            <p class="text-muted mb-2">Mobile Developer</p>
-                            <div class="team-specialty">iOS & Android</div>
+                            <p class="text-muted mb-2">Desarrolladora Móvil</p>
+                            <div class="team-specialty">iOS y Android</div>
                         </div>
                     </div>
                 </div>
@@ -795,8 +793,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star-half-alt"></i>
                                 <span class="ml-1">(115)</span>
                             </div>
-                            <p class="text-muted mb-2">Content Marketing Specialist</p>
-                            <div class="team-specialty">Social Media</div>
+                            <p class="text-muted mb-2">Especialista en Marketing de Contenidos</p>
+                            <div class="team-specialty">Redes Sociales</div>
                         </div>
                     </div>
                 </div>
@@ -820,8 +818,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                 <i class="fas fa-star"></i>
                                 <span class="ml-1">(172)</span>
                             </div>
-                            <p class="text-muted mb-2">Data Analyst</p>
-                            <div class="team-specialty">SQL & Tableau</div>
+                            <p class="text-muted mb-2">Analista de Datos</p>
+                            <div class="team-specialty">SQL y Tableau</div>
                         </div>
                     </div>
                 </div>
@@ -840,7 +838,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             <i class="fas fa-user-graduate"></i>
                         </div>
                         <div class="stat-number" data-count="15000">0</div>
-                        <div class="stat-text">Happy Students</div>
+                        <div class="stat-text">Estudiantes Satisfechos</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
@@ -849,7 +847,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             <i class="fas fa-book-open"></i>
                         </div>
                         <div class="stat-number" data-count="120">0</div>
-                        <div class="stat-text">Total Courses</div>
+                        <div class="stat-text">Total de Cursos</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
@@ -858,7 +856,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             <i class="fas fa-user-tie"></i>
                         </div>
                         <div class="stat-number" data-count="35">0</div>
-                        <div class="stat-text">Expert Instructors</div>
+                        <div class="stat-text">Instructores Expertos</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
@@ -867,7 +865,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                             <i class="fas fa-award"></i>
                         </div>
                         <div class="stat-number" data-count="25">0</div>
-                        <div class="stat-text">Awards Won</div>
+                        <div class="stat-text">Premios Ganados</div>
                     </div>
                 </div>
             </div>
@@ -879,8 +877,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid py-5">
         <div class="container">
             <div class="text-center mb-5">
-                <h5 class="section-title px-3">Testimonials</h5>
-                <h2 class="mb-4">What Our Students Say About Our Instructors</h2>
+                <h5 class="section-title px-3">Testimonios</h5>
+                <h2 class="mb-4">Lo Que Nuestros Estudiantes Dicen de Nuestros Instructores</h2>
             </div>
             <div class="row">
                 <div class="col-lg-6">
@@ -888,12 +886,12 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                         <div class="testimonial-quote">
                             <i class="fas fa-quote-left"></i>
                         </div>
-                        <p class="testimonial-text">Sarah is an amazing instructor! Her knowledge of full-stack development is impressive, and she explains complex concepts in a way that's easy to understand. Thanks to her course, I was able to land my first developer job.</p>
+                        <p class="testimonial-text">¡Ana es una instructora increíble! Su conocimiento del desarrollo full-stack es impresionante, y explica conceptos complejos de una manera que es fácil de entender. Gracias a su curso, pude conseguir mi primer trabajo como desarrollador profesional.</p>
                         <div class="testimonial-info">
-                            <img src="../assets/img/testimonial-1.jpg" alt="Student">
+                            <img src="../assets/img/testimonial-1.jpg" alt="Estudiante">
                             <div>
-                                <h5 class="testimonial-name">Alex Parker</h5>
-                                <p class="testimonial-position">Web Developer Student</p>
+                                <h5 class="testimonial-name">Alejandro Pérez</h5>
+                                <p class="testimonial-position">Estudiante de Desarrollo Web</p>
                             </div>
                         </div>
                     </div>
@@ -903,12 +901,12 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                         <div class="testimonial-quote">
                             <i class="fas fa-quote-left"></i>
                         </div>
-                        <p class="testimonial-text">Emily's data science course was transformative for my career. She has a unique ability to make complex statistical concepts accessible and engaging. Her practical approach to teaching has given me skills I use every day.</p>
+                        <p class="testimonial-text">El curso de ciencia de datos de María fue transformador para mi carrera profesional. Tiene una habilidad única para hacer accesibles y atractivos los conceptos estadísticos complejos. Su enfoque práctico me ha dado habilidades que uso todos los días en mi trabajo actual.</p>
                         <div class="testimonial-info">
-                            <img src="../assets/img/testimonial-2.jpg" alt="Student">
+                            <img src="../assets/img/testimonial-2.jpg" alt="Estudiante">
                             <div>
                                 <h5 class="testimonial-name">Jessica Wong</h5>
-                                <p class="testimonial-position">Data Analysis Student</p>
+                                <p class="testimonial-position">Estudiante de Análisis de Datos</p>
                             </div>
                         </div>
                     </div>
@@ -923,9 +921,9 @@ if ($isLoggedIn && $userRole === 'estudiante') {
         <div class="cta-section text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <h2>Ready to Start Learning with Our Expert Instructors?</h2>
-                    <p>Join thousands of students who have already accelerated their careers with SKILLBOOTS courses. Get started today!</p>
-                    <a href="/skillboots/templates/course.php" class="cta-btn">Browse Courses</a>
+                    <h2>¿Listo para Comenzar a Aprender con Nuestros Instructores Expertos?</h2>
+                    <p>Únete a miles de estudiantes que ya han acelerado sus carreras con los cursos de SKILLBOOTS. ¡Comienza hoy mismo tu transformación profesional!</p>
+                    <a href="/skillboots/templates/course.php" class="cta-btn">Explorar Cursos</a>
                 </div>
             </div>
         </div>

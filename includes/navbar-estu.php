@@ -1,6 +1,6 @@
 <?php
 if(session_status() === PHP_SESSION_NONE){
-    session_start();
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/skillboots/auth/init.php';
 }
 if (!isset($_SESSION['user_id'])) {
     header("Location: sesion.php");
@@ -33,132 +33,136 @@ $rol = $_SESSION['user_rol'];
 </head>
 
 
-    <style>
-        .skillboots-brand .skill {
+    <style >
+       .skillboots-brand .skill {
   color: var(--primary);
 }
-        .nav-bar,
+
+.nav-bar,
 .navbar {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave inferior */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
     position: relative;
 }
 
-        .nav-bar{
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row;
-        }
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
 
-        .derecho{
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row;
+.derecho {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
 
-        }
-        .derecho a{
-            padding: 20px 15px;
-            color: #44425A;
-            font-size: 18px;
-            font-weight: 500;
-            outline: none;
-        }
+.derecho a {
+    padding: 20px 15px;
+    color: #44425A;
+    font-size: 18px;
+    font-weight: 500;
+    outline: none;
+}
 
-        .nav-bar input{
-            border: 3px solid #bebebe;
-            border-radius: 10px;
-        }
-        input{
-            outline: none;
-        }
-        .lupa{
-            background-color: #ff6600;
-            color: white;
-            border-radius: 10px;
-            padding: 3px 5px;
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-            margin:auto;
-        }
-        .user-info {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        position: relative;
-    }
-    
-    .user-info span {
-        margin-right: 5px;
-    }
-    
-    .user-avatar {
-        cursor: pointer;
-    }
-    
-    .dropdown {
-        position: relative;
-    }
-    
-    .dropdown-menu {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        width: 200px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        display: none;
-        z-index: 1000;
-        padding: 8px 0;
-        margin-top: 5px;
-        border: 1px solid rgba(0,0,0,0.1);
-    }
-    
-    .dropdown:hover .dropdown-menu {
-        display: block;
-    }
-    
-    .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        text-decoration: none;
-        color: #44425A;
-        transition: all 0.3s ease;
-    }
-    
-    .dropdown-item:hover {
-        background-color: rgba(255, 102, 0, 0.1);
-        color: #ff6600;
-    }
-    
-    .dropdown-item i {
-        margin-right: 10px;
-        width: 16px;
-        text-align: center;
-    }
-    
-    .dropdown-divider {
-        height: 1px;
-        background-color: #e9ecef;
-        margin: 8px 0;
-    }
-    
-    /* Efecto de triángulo en la parte superior del menú desplegable */
-    .dropdown-menu::before {
-        content: '';
-        position: absolute;
-        top: -8px;
-        right: 20px;
-        width: 0;
-        height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-bottom: 8px solid white;
-    }
-    .profesor-badge {
-    background-color:rgb(76, 137, 175);
+.nav-bar input {
+    border: 3px solid #bebebe;
+    border-radius: 10px;
+}
+
+input {
+    outline: none;
+}
+
+.lupa {
+    background-color: #ff6600;
+    color: white;
+    border-radius: 10px;
+    padding: 3px 5px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+.user-info span {
+    margin-right: 5px;
+}
+
+.user-avatar {
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    padding: 8px 0;
+    margin-top: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #44425A;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 102, 0, 0.1);
+    color: #ff6600;
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 8px 0;
+}
+
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+.profesor-badge {
+    background-color: rgb(76, 137, 175);
     color: white;
     padding: 3px 8px;
     border-radius: 12px;
@@ -170,8 +174,8 @@ $rol = $_SESSION['user_rol'];
 
 <body>
     <!-- Topbar Start -->
-    <div class="container-fluid d-none d-lg-block">
-        <div class="nav-bar row align-items-center py-4 px-xl-5" style="flex-wrap: nowrap;">
+    <div class="container-fluid d-none d-lg-block" style="padding-left: 0; padding-right: 0;">
+        <div class="nav-bar  align-items-center py-4 px-xl-5" style="flex-wrap: nowrap;">
             <div class="col-lg-3">
                 <a href="/skillboots/index.php" class="skillboots-brand">
                     <h1 class="m-0"><span class="skill">SKILL</span><span class="boots">BOOTS</span></h1>
@@ -233,8 +237,8 @@ $rol = $_SESSION['user_rol'];
     <!-- Topbar End -->
 
 <!-- Navbar Start -->
-<div class="container-fluid d-lg-none"> <!-- Añadí d-lg-none aquí para ocultarlo en pantallas grandes -->
-    <div class="row border-top px-xl-5">
+<div class="container-fluid d-lg-none" style="padding-left: 0; padding-right: 0;" > <!-- Añadí d-lg-none aquí para ocultarlo en pantallas grandes -->
+    <div class=" border-top px-xl-5">
         <div class="col-lg-9">
             <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                 <!-- Logo (visible solo en móviles) -->

@@ -30,14 +30,14 @@ if ($isLoggedIn && $userRole === 'estudiante') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
-    <title>SKILLBOOTS - Online Courses HTML Template</title>
+    <title>SKILLBOOTS - Plantilla HTML de Cursos en Línea</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta content="Cursos en Línea, Educación Digital" name="keywords">
+    <meta content="Plataforma de cursos en línea para aprender tecnología" name="description">
 
     <!-- Favicon -->
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/skillboots/includes/head.php'; ?>
@@ -61,11 +61,11 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid page-header" style="margin-bottom: 90px;">
         <div class="container">
             <div class="d-flex flex-column justify-content-center" style="min-height: 300px">
-                <h3 class="display-4 text-white text-uppercase">Contact</h3>
+                <h3 class="display-4 text-white text-uppercase">Contacto</h3>
                 <div class="d-inline-flex text-white">
-                    <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                    <p class="m-0 text-uppercase"><a class="text-white" href="">Inicio</a></p>
                     <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                    <p class="m-0 text-uppercase">Contact</p>
+                    <p class="m-0 text-uppercase">Contacto</p>
                 </div>
             </div>
         </div>
@@ -77,8 +77,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">Contact</h5>
-                <h1>Contact For Any Query</h1>
+                <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">Contacto</h5>
+                <h1>Contáctanos para Cualquier Consulta</h1>
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -86,23 +86,23 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                         <div id="success"></div>
                         <form name="sentMessage" id="contactForm" novalidate="novalidate">
                             <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="name" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name" />
+                                <input type="text" class="form-control border-0 p-4" id="name" placeholder="Tu Nombre" required="required" data-validation-required-message="Por favor ingresa tu nombre" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="email" class="form-control border-0 p-4" id="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email" />
+                                <input type="email" class="form-control border-0 p-4" id="email" placeholder="Tu Email" required="required" data-validation-required-message="Por favor ingresa tu email" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="subject" placeholder="Subject" required="required" data-validation-required-message="Please enter a subject" />
+                                <input type="text" class="form-control border-0 p-4" id="subject" placeholder="Asunto" required="required" data-validation-required-message="Por favor ingresa un asunto" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <textarea class="form-control border-0 py-3 px-4" rows="5" id="message" placeholder="Message" required="required" data-validation-required-message="Please enter your message"></textarea>
+                                <textarea class="form-control border-0 py-3 px-4" rows="5" id="message" placeholder="Mensaje" required="required" data-validation-required-message="Por favor ingresa tu mensaje"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="text-center">
-                                <button class="btn btn-primary py-3 px-5" type="submit" id="sendMessageButton">Send Message</button>
+                                <button class="btn btn-primary py-3 px-5" type="submit" id="sendMessageButton">Enviar Mensaje</button>
                             </div>
                         </form>
                     </div>
@@ -119,10 +119,10 @@ if ($isLoggedIn && $userRole === 'estudiante') {
             <div class="col-lg-7 col-md-12">
                 <div class="row">
                     <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                        <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Contáctanos</h5>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>Calle 123, Bogotá, Colombia</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>+57 1 234 5678</p>
+                        <p><i class="fa fa-envelope mr-2"></i>info@skillboots.com</p>
                         <div class="d-flex justify-content-start mt-4">
                             <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
                             <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -131,25 +131,25 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                         </div>
                     </div>
                     <div class="col-md-6 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Nuestros Cursos</h5>
                         <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Diseño Web</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Desarrollo de Apps</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing Digital</a>
+                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Investigación</a>
                             <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-5 col-md-12 mb-5">
-                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
-                <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
+                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Boletín Informativo</h5>
+                <p>Mantente actualizado con las últimas tendencias en tecnología y educación digital. Recibe tips exclusivos, recursos gratuitos y noticias sobre nuevos cursos directamente en tu email. Únete a nuestra comunidad de aprendizaje.</p>
                 <div class="w-100">
                     <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Tu dirección de email">
                         <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
+                            <button class="btn btn-primary px-4">Suscribirse</button>
                         </div>
                     </div>
                 </div>
@@ -159,22 +159,22 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
         <div class="row">
             <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">&copy; <a href="#">Domain Name</a>. All Rights Reserved. Designed by <a href="https://htmlcodex.com">HTML Codex</a>
+                <p class="m-0 text-white">&copy; <a href="#">SKILLBOOTS</a>. Todos los Derechos Reservados. Diseñado por <a href="https://htmlcodex.com">HTML Codex</a>
                 </p>
             </div>
             <div class="col-lg-6 text-center text-md-right">
                 <ul class="nav d-inline-flex">
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Privacy</a>
+                        <a class="nav-link text-white py-0" href="#">Privacidad</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Terms</a>
+                        <a class="nav-link text-white py-0" href="#">Términos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                        <a class="nav-link text-white py-0" href="#">FAQ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Help</a>
+                        <a class="nav-link text-white py-0" href="#">Ayuda</a>
                     </li>
                 </ul>
             </div>

@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="text" class="form-control" id="imagen" name="imagen" value="<?php echo htmlspecialchars($course['imagen']); ?>">
                             </div>
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                            <a href="view_course.php?id=<?php echo $course['id']; ?>" class="btn btn-secondary">Cancelar</a>
+                            <a href="view_courses.php?id=<?php echo $course['id']; ?>" class="btn btn-secondary">Cancelar</a>
                         </form>
                     </div>
                 </div>
