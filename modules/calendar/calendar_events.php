@@ -94,7 +94,7 @@ try {
                             CONCAT('Entrega: ', a.titulo) as descripcion,
                             m.titulo as modulo_titulo, c.nombre as curso_nombre, c.id as curso_id
                             FROM actividades a
-                            JOIN modulos m ON a.unidad_id = m.id
+                            JOIN modulos m ON a.modulo_id = m.id
                             JOIN cursos c ON m.curso_id = c.id
                             JOIN usuarios_cursos uc ON c.id = uc.curso_id
                             WHERE MONTH(a.fecha_limite) = :month

@@ -247,7 +247,7 @@
 }
 
 #notificationDropdown .dropdown-item div {
-    flex: 1;
+    /* flex: 1; */
 }
 
 /* Mobile menu improvements */

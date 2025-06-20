@@ -13,9 +13,9 @@ if (!$usuario_id) {
 }
 
 try {
-    $sql = "SELECT r.id, r.unidad_id, r.titulo, r.tipo, r.contenido, r.url, r.obligatorio, r.texto_contenido
+    $sql = "SELECT r.id, r.modulo_id, r.titulo, r.tipo, r.contenido, r.url, r.obligatorio, r.texto_contenido
             FROM recursos r
-            JOIN modulos m ON r.unidad_id = m.id
+            JOIN modulos m ON r.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             JOIN usuarios_cursos uc ON c.id = uc.curso_id
             WHERE uc.usuario_id = :usuario_id

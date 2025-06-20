@@ -13,7 +13,7 @@ try {
     $sql = "SELECT ac.id, a.titulo, ac.calificacion, ac.fecha_completado, c.nombre as curso
             FROM actividades_completadas ac
             JOIN actividades a ON ac.actividad_id = a.id
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             WHERE ac.usuario_id = :usuario_id
             ORDER BY ac.fecha_completado DESC";

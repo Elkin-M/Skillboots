@@ -22,7 +22,7 @@ try {
     // Obtener información de la actividad
     $sql = "SELECT a.*, m.titulo as modulo_titulo, m.curso_id, c.nombre as curso_nombre
             FROM actividades a
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             WHERE a.id = :actividad_id";
     $stmt = $conn->prepare($sql);

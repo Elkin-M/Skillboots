@@ -14,7 +14,7 @@ if (!$usuario_id) {
 try {
     $sql = "SELECT a.id, a.titulo, a.fecha_limite, a.puntuacion, a.tiempo, c.nombre as curso
             FROM actividades a
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             JOIN usuarios_cursos uc ON c.id = uc.curso_id
             LEFT JOIN actividades_completadas ac ON a.id = ac.actividad_id AND ac.usuario_id = :usuario_id

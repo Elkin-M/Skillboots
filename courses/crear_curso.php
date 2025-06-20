@@ -35,7 +35,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
     <!-- Bootstrap CSS -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
     <!-- Font Awesome para iconos -->
-    <link href="css/crear_curso.css" rel="stylesheet">
+    <link href="../assets/css/crear_curso.css" rel="stylesheet">
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
 </head>
 
@@ -47,8 +47,8 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                 <h1 class="h3 fw-bold text-dark mb-0">Panel de Administración</h1>
                 <div class="d-flex align-items-center">
                     <span class="me-3" style="color: var(--primary); ">Bienvenido, <?php echo htmlspecialchars($userName); ?></span>
-                    <a href="./holaaaa.php" class="btn btn-sm btn-outline-secondary" style="background-color: var(--primary);">Regresar</a>
-                </div>
+                    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary" style="background-color: var(--primary);">Regresar</a>
+                    </div>
             </div>
         </div>
     </header>
@@ -147,7 +147,7 @@ if ($isLoggedIn && $userRole === 'estudiante') {
                                                 <a href="edit_course.php?id=<?= $curso['id'] ?>" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-edit me-1"></i> Editar
                                                 </a>
-                                                <a href="view_courses.php?id=<?= $curso['id'] ?>" style="background-color: var(--success);" class="btn btn-sm btn-outline-secondary">
+                                                <a href="../templates/course_details.php?id=<?= $curso['id'] ?>" style="background-color: var(--success);" class="btn btn-sm btn-outline-secondary">
                                                     <i class="fas fa-eye me-1"></i> Ver
                                                 </a>
                                             </div>
@@ -1464,8 +1464,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $url_recurso = isset($recurso['url']) ? $recurso['url'] : '';
                         $texto_contenido = isset($recurso['texto_contenido']) ? $recurso['texto_contenido'] : '';
 
-                        // En la tabla recursos, el campo se llama unidad_id pero guardamos el modulo_id
-                        $sql = "INSERT INTO recursos (unidad_id, titulo, tipo, contenido, obligatorio, url,texto_contenido)
+                        // En la tabla recursos, el campo se llama modulo_id pero guardamos el modulo_id
+                        $sql = "INSERT INTO recursos (modulo_id, titulo, tipo, contenido, obligatorio, url,texto_contenido)
                                 VALUES (:modulo_id, :titulo, :tipo, :contenido, :obligatorio, :url,:texto_contenido)";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute([
@@ -1498,8 +1498,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $tiempo = isset($actividad['tiempo']) ? $actividad['tiempo'] : 0;
                         $obligatorio_actividad = isset($actividad['obligatorio']) ? 1 : 0;
 
-                        // En la tabla actividades, el campo se llama unidad_id pero guardamos el modulo_id
-                        $sql = "INSERT INTO actividades (unidad_id, titulo, tipo, contenido, puntuacion, fecha_limite, tiempo, obligatorio)
+                        // En la tabla actividades, el campo se llama modulo_id pero guardamos el modulo_id
+                        $sql = "INSERT INTO actividades (modulo_id, titulo, tipo, contenido, puntuacion, fecha_limite, tiempo, obligatorio)
                                 VALUES (:modulo_id, :titulo, :tipo, :contenido, :puntuacion, :fecha_limite, :tiempo, :obligatorio)";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute([

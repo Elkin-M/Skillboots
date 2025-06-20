@@ -76,9 +76,9 @@ try {
             WHERE cm.modulo_id = m.id AND cv.usuario_id = :user_id) as contenidos_vistos,
            (SELECT COUNT(*) FROM actividades_completadas ac
             JOIN actividades a ON ac.actividad_id = a.id
-            WHERE a.unidad_id = m.id AND ac.usuario_id = :aser_id) as actividades_completadas,
+            WHERE a.modulo_id = m.id AND ac.usuario_id = :aser_id) as actividades_completadas,
            (SELECT COUNT(*) FROM contenido_modular WHERE modulo_id = m.id) as total_contenidos,
-           (SELECT COUNT(*) FROM actividades WHERE unidad_id = m.id) as total_actividades
+           (SELECT COUNT(*) FROM actividades WHERE modulo_id = m.id) as total_actividades
            FROM modulos m
            WHERE m.curso_id = :curso_id
            ORDER BY m.orden ASC";
@@ -96,6 +96,7 @@ try {
     throw $e;
 }
 
+
 // Calcular el progreso de cada módulo
 foreach ($modulos as &$modulo) {
     $total_items = $modulo['total_contenidos'] + $modulo['total_actividades'];
@@ -104,7 +105,7 @@ foreach ($modulos as &$modulo) {
 
     // Obtener recursos
     try {
-        $sql = "SELECT * FROM recursos WHERE unidad_id = :modulo_id";
+        $sql = "SELECT * FROM recursos WHERE modulo_id = :modulo_id";
         $stmt = $conn->prepare($sql);
         $stmt->execute([':modulo_id' => $modulo['id']]);
         $modulo['recursos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -113,121 +114,125 @@ foreach ($modulos as &$modulo) {
         throw $e;
     }
 
-// Obtener actividades
-try {
-    $sql = "SELECT a.*
-            FROM actividades a
-            WHERE a.unidad_id = :modulo_id
-            ORDER BY a.orden ASC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':modulo_id' => $modulo['id']]);
-    $actividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Error al obtener actividades: " . $e->getMessage());
-    throw $e;
-}
-
-// Obtener estado de completado para cada actividad
-foreach ($actividades as &$actividad) {
+    // Obtener actividades
     try {
-        $sql = "SELECT COUNT(*) > 0 as completada
-                FROM actividades_completadas
-                WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
+        $sql = "SELECT a.*
+                FROM actividades a
+                WHERE a.modulo_id = :modulo_id
+                ORDER BY a.orden ASC";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':actividad_id' => $actividad['id'],
-            ':user_id' => $user_id
-        ]);
-        $actividad['completada'] = $stmt->fetchColumn();
+        $stmt->execute([':modulo_id' => $modulo['id']]);
+        $actividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        error_log("Error al obtener estado de completado para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
+        error_log("Error al obtener actividades: " . $e->getMessage());
         throw $e;
     }
 
+    // Obtener estado de completado para cada actividad
+    foreach ($actividades as &$actividad) {
+        try {
+            $sql = "SELECT COUNT(*) > 0 as completada
+                    FROM actividades_completadas
+                    WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':actividad_id' => $actividad['id'],
+                ':user_id' => $user_id
+            ]);
+            $actividad['completada'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al obtener estado de completado para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
+            throw $e;
+        }
+
+        try {
+            $sql = "SELECT calificacion
+                    FROM actividades_completadas
+                    WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':actividad_id' => $actividad['id'],
+                ':user_id' => $user_id
+            ]);
+            $actividad['calificacion'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al obtener calificación para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
+            throw $e;
+        }
+
+        try {
+            $sql = "SELECT fecha_completado
+                    FROM actividades_completadas
+                    WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':actividad_id' => $actividad['id'],
+                ':user_id' => $user_id
+            ]);
+            $actividad['fecha_completado'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al obtener fecha de completado para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    // Asignar actividades al módulo
+    $modulo['actividades'] = $actividades;
+
+    // Obtener contenido modular - CORREGIDO: usar consulta simple
     try {
-        $sql = "SELECT calificacion
-                FROM actividades_completadas
-                WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
+        $sql = "SELECT id, modulo_id, tipo, contenido, orden, titulo
+                FROM contenido_modular 
+                WHERE modulo_id = :modulo_id
+                ORDER BY orden ASC, id ASC";
+        
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':actividad_id' => $actividad['id'],
-            ':user_id' => $user_id
-        ]);
-        $actividad['calificacion'] = $stmt->fetchColumn();
+        $stmt->execute([':modulo_id' => $modulo['id']]);
+        $contenido_modular = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        error_log("Error al obtener calificación para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
+        error_log("Error al obtener contenido modular: " . $e->getMessage());
         throw $e;
     }
 
-    try {
-        $sql = "SELECT fecha_completado
-                FROM actividades_completadas
-                WHERE actividad_id = :actividad_id AND usuario_id = :user_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':actividad_id' => $actividad['id'],
-            ':user_id' => $user_id
-        ]);
-        $actividad['fecha_completado'] = $stmt->fetchColumn();
-    } catch (PDOException $e) {
-        error_log("Error al obtener fecha de completado para actividad ID " . $actividad['id'] . ": " . $e->getMessage());
-        throw $e;
-    }
-}
+    // Obtener estado de visto y fecha de visto para cada contenido modular
+    foreach ($contenido_modular as &$contenido) {
+        try {
+            $sql = "SELECT COUNT(*) > 0 as visto
+                    FROM contenido_visto
+                    WHERE contenido_id = :contenido_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':contenido_id' => $contenido['id'],
+                ':user_id' => $user_id
+            ]);
+            $contenido['visto'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al obtener estado de visto para contenido ID " . $contenido['id'] . ": " . $e->getMessage());
+            throw $e;
+        }
 
-$modulo['actividades'] = $actividades;
-
-
-   // Obtener contenido modular
-try {
-    $sql = "SELECT cm.*
-            FROM contenido_modular cm
-            WHERE cm.modulo_id = :modulo_id
-            ORDER BY cm.orden ASC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':modulo_id' => $modulo['id']]);
-    $contenido_modular = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Error al obtener contenido modular: " . $e->getMessage());
-    throw $e;
-}
-
-// Obtener estado de visto y fecha de visto para cada contenido modular
-foreach ($contenido_modular as &$contenido) {
-    try {
-        $sql = "SELECT COUNT(*) > 0 as visto
-                FROM contenido_visto
-                WHERE contenido_id = :contenido_id AND usuario_id = :user_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':contenido_id' => $contenido['id'],
-            ':user_id' => $user_id
-        ]);
-        $contenido['visto'] = $stmt->fetchColumn();
-    } catch (PDOException $e) {
-        error_log("Error al obtener estado de visto para contenido ID " . $contenido['id'] . ": " . $e->getMessage());
-        throw $e;
+        try {
+            $sql = "SELECT fecha_visto
+                    FROM contenido_visto
+                    WHERE contenido_id = :contenido_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':contenido_id' => $contenido['id'],
+                ':user_id' => $user_id
+            ]);
+            $contenido['fecha_visto'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al obtener fecha de visto para contenido ID " . $contenido['id'] . ": " . $e->getMessage());
+            throw $e;
+        }
     }
 
-    try {
-        $sql = "SELECT fecha_visto
-                FROM contenido_visto
-                WHERE contenido_id = :contenido_id AND usuario_id = :user_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':contenido_id' => $contenido['id'],
-            ':user_id' => $user_id
-        ]);
-        $contenido['fecha_visto'] = $stmt->fetchColumn();
-    } catch (PDOException $e) {
-        error_log("Error al obtener fecha de visto para contenido ID " . $contenido['id'] . ": " . $e->getMessage());
-        throw $e;
-    }
+    // IMPORTANTE: Asignar el contenido modular al módulo DENTRO del bucle
+    $modulo['contenido_modular'] = $contenido_modular;
 }
+// FIN del bucle foreach - IMPORTANTE: cerrar aquí
 
-$modulo['contenido_modular'] = $contenido_modular;
-
-}
+// El resto del código continúa después del bucle...
 
 // Encontrar el último contenido visto o la próxima lección por ver
 $ultimo_contenido_id = null;
@@ -276,7 +281,7 @@ try {
     $sql = "SELECT COUNT(*) as actividades_completadas
             FROM actividades_completadas ac
             JOIN actividades a ON ac.actividad_id = a.id
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             WHERE m.curso_id = :curso_id AND ac.usuario_id = :user_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute([
@@ -307,7 +312,7 @@ try {
     // Obtener el total de actividades
     $sql = "SELECT COUNT(*) as total_actividades
             FROM actividades a
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             WHERE m.curso_id = :curso_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute([':curso_id' => $curso_id]);

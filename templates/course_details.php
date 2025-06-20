@@ -12,15 +12,12 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $curso_id = (int)$_GET['id'];
-
 try {
     // Obtener información del curso
-// Obtener información del curso
-$sql = "SELECT c.*, u.name as instructor_nombre , lastname as instructor_apellido
-        FROM cursos c
-        LEFT JOIN usuarios u ON c.instructor_id = u.id
-        WHERE c.id = :curso_id AND c.estado = 'publicado' AND c.estate = 'activo'";
-
+    $sql = "SELECT c.*, u.name as instructor_nombre, u.lastname as instructor_apellido
+            FROM cursos c
+            LEFT JOIN usuarios u ON c.instructor_id = u.id
+            WHERE c.id = :curso_id AND c.estado = 'publicado' AND c.estate = 'activo'";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute([':curso_id' => $curso_id]);
@@ -39,44 +36,43 @@ $sql = "SELECT c.*, u.name as instructor_nombre , lastname as instructor_apellid
     $modulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Obtener valoraciones del curso
-$sql = "SELECT rating FROM course_ratings WHERE curso_id = :curso_id";
-$stmt = $conn->prepare($sql);
-$stmt->execute([':curso_id' => $curso_id]);
-$valoraciones = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $sql = "SELECT rating FROM course_ratings WHERE curso_id = :curso_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':curso_id' => $curso_id]);
+    $valoraciones = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Calcular promedio de valoraciones
-if (!empty($valoraciones)) {
-    $promedio = round(array_sum($valoraciones) / count($valoraciones), 1);
-} else {
-    $promedio = 0.0;
-}
+    // Calcular promedio de valoraciones
+    if (!empty($valoraciones)) {
+        $promedio = round(array_sum($valoraciones) / count($valoraciones), 1);
+    } else {
+        $promedio = 0.0;
+    }
 
     // Obtener cursos relacionados por categoría (excluyendo el curso actual)
     $sql = "SELECT * FROM cursos 
-WHERE categoria = :categoria 
-AND id != :curso_id 
-AND estado = 'publicado' 
-AND estate = 'activo' 
-LIMIT 6";
-$stmt = $conn->prepare($sql);
-$stmt->execute([
-    ':categoria' => $curso['categoria'],
-    ':curso_id' => $curso_id
-]);
-
+            WHERE categoria = :categoria 
+            AND id != :curso_id 
+            AND estado = 'publicado' 
+            AND estate = 'activo' 
+            LIMIT 6";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+        ':categoria' => $curso['categoria'],
+        ':curso_id' => $curso_id
+    ]);
     
-$cursos_relacionados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $cursos_relacionados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Para cada módulo, obtener recursos, actividades y contenido modular
     foreach ($modulos as &$modulo) {
-        // Obtener recursos (unidad_id en la tabla recursos corresponde a modulo_id)
-        $sql = "SELECT * FROM recursos WHERE unidad_id = :modulo_id";
+        // Obtener recursos (CORREGIDO: usar modulo_id en lugar de modulo_id)
+        $sql = "SELECT * FROM recursos WHERE modulo_id = :modulo_id";
         $stmt = $conn->prepare($sql);
         $stmt->execute([':modulo_id' => $modulo['id']]);
         $modulo['recursos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Obtener actividades
-        $sql = "SELECT * FROM actividades WHERE unidad_id = :modulo_id";
+        // Obtener actividades (CORREGIDO: usar modulo_id en lugar de modulo_id)
+        $sql = "SELECT * FROM actividades WHERE modulo_id = :modulo_id";
         $stmt = $conn->prepare($sql);
         $stmt->execute([':modulo_id' => $modulo['id']]);
         $actividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -126,15 +122,16 @@ $cursos_relacionados = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($stmt->rowCount() > 0) {
             $usuario_inscrito = true;
                 
-                // Obtener progreso del curso
-                $sql = "SELECT AVG(progreso) as progreso FROM usuarios_cursos WHERE curso_id = :curso_id AND usuario_id = :user_id";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([
-                    ':curso_id' => $curso_id,
-                    ':user_id' => $user_id
-                ]);
-                
-                $progreso_curso = round($stmt->fetch(PDO::FETCH_ASSOC)['progreso'], 2);
+            // Obtener progreso del curso
+            $sql = "SELECT progreso FROM usuarios_cursos WHERE curso_id = :curso_id AND usuario_id = :user_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':curso_id' => $curso_id,
+                ':user_id' => $user_id
+            ]);
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $progreso_curso = $result ? round($result['progreso'], 2) : 0;
         }
     }
     
@@ -956,7 +953,9 @@ if (substr($base_path, -1) !== '/') {
             margin-bottom: 1rem;
             margin-top: auto;
         }
-
+        .row>*{
+            width: auto !important;
+        }
         .course-price.free {
             color: var(--success-color);
         }

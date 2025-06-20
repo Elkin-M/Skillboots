@@ -625,8 +625,10 @@ if (count($result) > 0) {
                 break;
         }
 
+        // Debug: Verificar que el ID del curso existe
+        $course_id = $course['id'];
         echo '
-        <div class="bg-light rounded p-4 mb-3 curso-item" data-id="'.$course['id'].'" data-status="'.$course['estado'].'">
+        <div class="bg-light rounded p-4 mb-3 curso-item" data-id="'.$course_id.'" data-status="'.$course['estado'].'">
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <h5 class="mb-1">'.htmlspecialchars($course['nombre']).'</h5>
@@ -641,10 +643,11 @@ if (count($result) > 0) {
                     </div>
                 </div>
                 <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
-                    <a href="../courses/view_courses.php?id='.$course['id'].'" class="btn btn-sm btn-outline-primary mr-1">Ver</a>
-                    <a href="../courses/edit_course.php?id='.$course['id'].'" class="btn btn-sm btn-outline-primary mr-1">Editar</a>
-                    <a href="#" class="btn btn-sm btn-outline-danger delete-course" data-id="'.$course['id'].'" data-nombre="'.htmlspecialchars($course['nombre']).'">Eliminar</a>
-                    <a href="#" class="btn btn-sm btn-outline-info" onclick="mostrarPersonasInscritas('.$course['id'].', \''.htmlspecialchars($course['nombre']).'\')">Inscritos</a>
+                    <!-- Debug: Ver el HTML generado -->
+                    <a href="javascript:void(0)" onclick="window.location.href=\'course_details.php?id='.$course_id.'\'" class="btn btn-sm btn-outline-primary mr-1">Ver</a>
+                    <a href="javascript:void(0)" onclick="window.location.href=\'../courses/edit_course.php?id='.$course_id.'\'" class="btn btn-sm btn-outline-primary mr-1">Editar</a>
+                    <a href="#" class="btn btn-sm btn-outline-danger delete-course" data-id="'.$course_id.'" data-nombre="'.htmlspecialchars($course['nombre']).'">Eliminar</a>
+                    <a href="#" class="btn btn-sm btn-outline-info" onclick="mostrarPersonasInscritas('.$course_id.', \''.htmlspecialchars($course['nombre']).'\')">Inscritos</a>
                 </div>
             </div>
         </div>';
@@ -659,6 +662,26 @@ if (count($result) > 0) {
 </div>';
 }
 ?>
+
+<!-- Script para depurar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar que los enlaces se generen correctamente
+    const verButtons = document.querySelectorAll('a[href*="course_details.php"]');
+    const editButtons = document.querySelectorAll('a[href*="edit_course.php"]');
+    
+    console.log('Botones Ver encontrados:', verButtons.length);
+    console.log('Botones Editar encontrados:', editButtons.length);
+    
+    verButtons.forEach((btn, index) => {
+        console.log(`Botón Ver ${index + 1} - href:`, btn.href);
+    });
+    
+    editButtons.forEach((btn, index) => {
+        console.log(`Botón Editar ${index + 1} - href:`, btn.href);
+    });
+});
+</script>
 
 
 <script>
@@ -1146,8 +1169,8 @@ document.addEventListener('DOMContentLoaded', function() {
   })(document, 'script');
 </script>
 <script>
-    // ============================================================================
-// FUNCIONALIDADES DASHBOARD PROFESOR
+// ============================================================================
+// FUNCIONALIDADES DASHBOARD PROFESOR - VERSIÓN CORREGIDA
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1163,10 +1186,50 @@ function initializeDashboard() {
     
     // Inicializar eliminación de cursos
     initializeCourseActions();
+    
+    // NUEVO: Configurar eventos de cierre de modal
+    initializeModalEvents();
 }
 
 // ============================================================================
-// FILTROS DE CURSOS
+// CONFIGURACIÓN DE EVENTOS DE MODAL - NUEVO
+// ============================================================================
+
+function initializeModalEvents() {
+    // Asegurar que el modal se cierre correctamente
+    $('#accionesModal').on('hidden.bs.modal', function () {
+        // Remover backdrop manualmente si persiste
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('padding-right', '');
+        
+        // Limpiar contenido del modal
+        document.getElementById('modalContent').innerHTML = '';
+    });
+    
+    // Manejar botón de cerrar
+    $(document).on('click', '[data-dismiss="modal"]', function() {
+        $('#accionesModal').modal('hide');
+    });
+}
+
+// ============================================================================
+// FUNCIÓN AUXILIAR PARA CERRAR MODAL CORRECTAMENTE - NUEVA
+// ============================================================================
+
+function cerrarModal() {
+    $('#accionesModal').modal('hide');
+    
+    // Timeout para asegurar que se remueva el backdrop
+    setTimeout(function() {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('padding-right', '');
+    }, 300);
+}
+
+// ============================================================================
+// FILTROS DE CURSOS (sin cambios)
 // ============================================================================
 
 function initializeCourseFilters() {
@@ -1248,7 +1311,7 @@ function updateEmptyState(visibleCount, filter) {
 }
 
 // ============================================================================
-// ACCIONES RÁPIDAS
+// ACCIONES RÁPIDAS (sin cambios)
 // ============================================================================
 
 function initializeQuickActions() {
@@ -1278,7 +1341,7 @@ function initializeQuickActions() {
 }
 
 // ============================================================================
-// REVISAR TAREAS
+// REVISAR TAREAS (sin cambios significativos)
 // ============================================================================
 
 function mostrarRevisarTareas() {
@@ -1375,7 +1438,7 @@ function revisarTarea(taskId) {
 }
 
 // ============================================================================
-// MENSAJES
+// MENSAJES (sin cambios significativos)
 // ============================================================================
 
 function mostrarMensajes() {
@@ -1478,7 +1541,7 @@ function leerMensaje(messageId) {
 }
 
 // ============================================================================
-// PROGRAMAR SESIÓN
+// PROGRAMAR SESIÓN - CORREGIDO
 // ============================================================================
 
 function mostrarProgramarSesion() {
@@ -1532,7 +1595,7 @@ function mostrarProgramarSesion() {
             </div>
             
             <div class="form-group text-right">
-                <button type="button" class="btn btn-secondary mr-2" onclick="$('#accionesModal').modal('hide')">Cancelar</button>
+                <button type="button" class="btn btn-secondary mr-2" onclick="cerrarModal()">Cancelar</button>
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-calendar-plus mr-2"></i>
                     Programar Sesión
@@ -1560,7 +1623,7 @@ function cargarCursosInstructor() {
     fetch('/skillboots/templates/dashboard/get_instructor_courses.php')
     .then(response => response.json())
         .then(data => {
-            console.log('Respuesta del servidor:', data); // 👈 Agrega esto
+            console.log('Respuesta del servidor:', data);
             const select = document.getElementById('cursoSesion');
             console.log('Select encontrado:', select);
             if (data.success && data.courses.length > 0) {
@@ -1579,6 +1642,7 @@ function cargarCursosInstructor() {
             console.error('Error al cargar cursos:', error);
         });
 }
+
 function programarNuevaSesion(form) {
     const formData = new FormData(form);
 
@@ -1608,14 +1672,8 @@ function programarNuevaSesion(form) {
                 // ✅ Mostrar mensaje de éxito
                 alert(data.message || 'Sesión programada con éxito');
 
-                // ✅ Cerrar el modal (usa el ID correcto de tu modal)
-                const modal = document.getElementById('modalNuevaSesion');
-                if (modal) {
-                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
-                    if (bootstrapModal) {
-                        bootstrapModal.hide();
-                    }
-                }
+                // ✅ Cerrar el modal correctamente
+                cerrarModal();
 
                 // ✅ Recargar la página para ver la nueva sesión
                 setTimeout(() => location.reload(), 500);
@@ -1634,10 +1692,8 @@ function programarNuevaSesion(form) {
     });
 }
 
-
-
 // ============================================================================
-// SUBIR MATERIAL
+// SUBIR MATERIAL - CORREGIDO
 // ============================================================================
 
 function mostrarSubirMaterial() {
@@ -1704,7 +1760,7 @@ function mostrarSubirMaterial() {
             </div>
             
             <div class="form-group text-right">
-                <button type="button" class="btn btn-secondary mr-2" onclick="$('#accionesModal').modal('hide')">Cancelar</button>
+                <button type="button" class="btn btn-secondary mr-2" onclick="cerrarModal()">Cancelar</button>
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-upload mr-2"></i>
                     Subir Material
@@ -1831,7 +1887,7 @@ function subirNuevoMaterial(form) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            $('#accionesModal').modal('hide');
+            cerrarModal(); // Usar función corregida
             alert('Material subido exitosamente');
         } else {
             alert('Error al subir el material: ' + (data.message || 'Error desconocido'));
@@ -1847,6 +1903,10 @@ function subirNuevoMaterial(form) {
         submitBtn.disabled = false;
     });
 }
+
+// ============================================================================
+// FUNCIONES AUXILIARES (mantener las existentes si las hay)
+// ============================================================================
 
 // ============================================================================
 // ACCIONES DE CURSOS

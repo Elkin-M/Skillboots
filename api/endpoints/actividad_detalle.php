@@ -17,7 +17,7 @@ try {
     $sql = "SELECT a.id, a.titulo, a.contenido as descripcion, a.fecha_limite, a.puntuacion, a.tiempo,
                 c.nombre as curso, m.titulo as modulo
             FROM actividades a
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             JOIN usuarios_cursos uc ON c.id = uc.curso_id
             WHERE uc.usuario_id = :usuario_id

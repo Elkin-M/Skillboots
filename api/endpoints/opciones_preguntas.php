@@ -17,7 +17,7 @@ try {
             FROM opciones o
             JOIN preguntas p ON o.pregunta_id = p.id
             JOIN actividades a ON p.actividad_id = a.id
-            JOIN modulos m ON a.unidad_id = m.id
+            JOIN modulos m ON a.modulo_id = m.id
             JOIN cursos c ON m.curso_id = c.id
             JOIN usuarios_cursos uc ON c.id = uc.curso_id
             WHERE uc.usuario_id = :usuario_id

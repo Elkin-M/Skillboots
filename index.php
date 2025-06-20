@@ -180,7 +180,7 @@ if ($pageData['isLoggedIn']) {
         </ol>
         <div class="carousel-inner">
             <?php foreach ($carouselData as $index => $slide): ?>
-                <div style="height: 600px;" class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?> " style="min-height: 300px; <?php echo $isLoggedIn ? 'height: 300px;' : ''; ?>">
+                <div style="height: auto;" class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?> " style="min-height: 300px; <?php echo $isLoggedIn ? 'height: 300px;' : ''; ?>">
                     
                 <img class="position-relative w-100" src="<?php echo $slide['image']; ?>" style="z-index:-10;  min-height: 300px; object-fit: fill;">
                 <div class="carousel-caption d-flex align-items-center justify-content-center">
@@ -809,6 +809,9 @@ if (isset($pageData['isLoggedIn']) && $pageData['isLoggedIn']) {
       }
       v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
   })(document, 'script');
+          
+          
+          
           // Función para mostrar alertas
           function showAlert(message, type) {
             // Crear el elemento de alerta
